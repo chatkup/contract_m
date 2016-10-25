@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>Untitled</title>
+<script type="text/javascript" src="lib/dojo/dojo/dojo.js" data-dojo-config="'parseOnLoad':true,'async':true,'packages':[{'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},{'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},{'name':'shapes','location':'../../shapes'},{'name':'zazl','location':'../../zazl'},{'name':'widgets','location':'../../custom'}],'themeMap':[['Android','',['themes/iphone/iphone.css']],['BlackBerry','',['themes/iphone/iphone.css']],['iPad','',['themes/iphone/iphone.css']],['iPhone','',['themes/iphone/iphone.css']],['.*','',['themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
+<script type="text/javascript">
+require([
+  "dijit/dijit",
+  "dojo/parser",
+  "maqetta/space",
+  "maqetta/AppStates",
+  "dijit/layout/BorderContainer",
+  "dijit/layout/ContentPane",
+  "dojox/mobile",
+  "dojox/mobile/deviceTheme",
+  "dojox/mobile/Button",
+  "dojox/mobile/ContentPane",
+  "dojox/mobile/TextBox",
+  "dojox/mobile/TextArea",
+  "dojo/hash",
+  "dijit/Calendar",
+  "dojox/mobile/DatePicker",
+  "dojox/mobile/SpinWheelDatePicker",
+  "dojox/mobile/ValuePickerDatePicker",
+  "dojox/mobile/Pane",
+  "dojox/mobile/SpinWheelTimePicker",
+  "dojox/mobile/TimePicker",
+  "dojox/mobile/ValuePickerTimePicker",
+  "dojox/io/xhrScriptPlugin",
+  "dojo/data/ItemFileReadStore",
+  "dojox/mobile/EdgeToEdgeDataList",
+  "dojox/mobile/SearchBox",
+  "dojox/mobile/ProgressIndicator",
+  "dojox/mobile/ScrollableView",
+  "dojox/mobile/Accordion",
+  "dojox/mobile/CheckBox",
+  "dojox/mobile/RadioButton",
+  "dojox/mobile/GridLayout",
+  "dojox/mobile/SpinWheel"
+]);
+</script>
+<style>@import "themes/claro/claro.css";@import "app.css";
+</style>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="udf.js"></script>
+<script type="text/javascript" src="contract_m.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></meta>
+</head>
+<body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" data-maq-ws="collapse" class="claro" id="myapp" data-maq-appstates="{}">
+ <div data-dojo-type="dojox/mobile/View" id="view1" style="height: 100%;" selected="true">
+   <h1 label="หน้าจอหลัก" data-dojo-type="dojox/mobile/Heading" id="view1_title" title="หน้าจอหลัก" style="font-size: 14px;">
+   </h1>
+   <div dvwidget="html.richtext" style="position: relative;" class="richText">
+     <div style="text-align: center;"></div>
+     <div>
+       <div style="text-align: center;"></div>
+       <div style="text-align: center;"></div>
+       <div style="text-align: center;">
+         <font size="5">
+           
+                             โปรแกรมบริหารสัญญา</font>
+       </div>
+       <div style="text-align: center;">
+         <font size="4">
+           
+                    ตามสัญญาประกวดราคา</font>
+       </div>
+       <div style="text-align: center;">
+         <font size="4">
+           
+                    โรงพยาบาลชุมชน จ.อุบลราชธานี</font>
+       </div>
+       <div style="text-align: center;">
+         <br/>
+       </div>
+       <div style="text-align: center;">
+         <font size="3">
+           
+                    โดยทีม IT รพ.ม่วงสามสิบ<br/>
+         </font>
+         <br/>
+       </div>
+       <div style="text-align: center;"></div>
+     </div>
+   </div>
+   <div dvwidget="html.richtext" class="richText" style="height: 25px; width: 45%;">
+Username</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="view1_user" style="background-color: transparent; height: 25px; width: 100%;"></input>
+   <div dvwidget="html.richtext" class="richText" style="height: 25px; width: 45%;">
+Password</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="view1_passw" style="background-color: transparent; height: 25px; width: 100%;"></input>
+   <button data-dojo-type="dojox/mobile/Button" id="view1_login" style="height: 31.96527862548828px; font-size: 100%; position: relative; width: 100%;">
+     
+     
+     
+     
+     
+     Login</button>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="view_menu" style="height: 100%;">
+  <h1 label="Main Menu" data-dojo-type="dojox/mobile/Heading" id="view_menu_title">
+  <div label="Logout" data-dojo-type="dojox/mobile/ToolBarButton" id="view_menu_logout"></div>
+    <div label="view2" data-dojo-type="dojox/mobile/ToolBarButton" id="view_menu_right" iconPos="right" arrow="right" style="float: right;"></div>
+  </h1>
+  <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_7" jsId="ItemFileReadStore_7" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+  <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view_menu_list" store="ItemFileReadStore_7" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_8" jsId="ItemFileReadStore_8" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view_menu_list2" store="ItemFileReadStore_8" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view3" style="height: 100%;">
+  <h1 label="เลือกสัญญา" data-dojo-type="dojox/mobile/Heading" id="view3_title" title="เลือกสัญญา">
+   <div label="หน้าหลัก" data-dojo-type="dojox/mobile/ToolBarButton" id="back_view3" arrow="left"></div>
+   <div label="+" data-dojo-type="dojox/mobile/ToolBarButton" id="view3_add" style="float: right;"></div>
+ </h1>
+  <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_1" jsId="ItemFileReadStore_1" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view3_list" store="ItemFileReadStore_1" query="{&quot;label&quot;:&quot;*&quot;}" style="background-color: transparent;"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view_contract" style="height: 100%;">
+  <h1 label="Heading" data-dojo-type="dojox/mobile/Heading" id="view_contract_title">
+   <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_view_contract" arrow="left"></div>
+ </h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_6" jsId="ItemFileReadStore_6" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view_contract_list" store="ItemFileReadStore_6" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view4" style="height: 100%;">
+  <h1 label="เลือกรายการน้ำยา" data-dojo-type="dojox/mobile/Heading" id="view4_title">
+   <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_view4" arrow="left"></div>
+ </h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_2" jsId="ItemFileReadStore_2" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view4_list" store="ItemFileReadStore_2" query="{&quot;label&quot;:&quot;*&quot;}" style="background-color: transparent;"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view2" style="height: 100%;">
+   <h1 label="มูลค่าที่จัดซื้อแล้ว" data-dojo-type="dojox/mobile/Heading" id="view2_title" style="font-size: 14px;">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="view2_back" arrow="left"></div>
+  </h1>
+   <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_4" jsId="ItemFileReadStore_4" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+   <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view2_list" style="border: none; height: 194.19445037841797px; width: 100%; background-color: transparent;" store="ItemFileReadStore_4" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
+   <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_5" jsId="ItemFileReadStore_5" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view2_choose" style="background-color: white;" store="ItemFileReadStore_5" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="select_dt" style="height: 100%;">
+   <h1 label="เลือกวัน-เวลา" data-dojo-type="dojox/mobile/Heading" id="select_dt_title" style="font-size: 14px;">
+     <div label="OK" data-dojo-type="dojox/mobile/ToolBarButton" id="back_select_dt" arrow="left" style="font-size: 10px;"></div>
+     <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" id="clear_dt" style="float: right;"></div>
+   </h1>
+   <input data-dojo-type="dijit/Calendar" id="calendar1" style="width: 100%;"></input>
+   <div data-dojo-type="dojox/mobile/Pane" style="height: 16.98263931274414px;"></div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" value="เวลา" disabled="true" style="border: none; float: left; font-weight: bold; width: 91px; text-align: center; background-color: transparent; height: 50px; font-size: 20px;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="hr1" style="float: left; width: 60px; height: 50px; font-weight: bold; text-align: center; font-size: 24pt;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" disabled="true" style="border: none; font-size: 20pt; font-weight: bold; text-align: center; background-color: transparent; height: 50px; float: right; width: 84px;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="min1" style="float: right; width: 60px; height: 50px; font-weight: bold; text-align: center; font-size: 24pt;"></input>
+   <h1 data-dojo-type="dojox/mobile/Heading" style="border: none; font-size: 14px; background-color: transparent; background-image: none; height: 20.975697938232422px;"></h1>
+   <h1 label="Heading" data-dojo-type="dojox/mobile/Heading" id="show_dt" style="background-color: transparent; background-image: none;"></h1>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="text_input" style="height: 100%;">
+<h1 label="Heading" data-dojo-type="dojox/mobile/Heading" id="txt_title" style="font-size: 14px;">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_txt" sync="true" toogle="true" arrow="left" style="font-size: 10px;"></div>
+    <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" id="txt_clear" style="float: right; font-size: 10px;"></div>
+  </h1>
+  <textarea data-dojo-type="dojox/mobile/TextArea" id="txt_return" placeHolder="Return Text" style="width: 100%; height: 59.33334px;"></textarea>
+  <input type="text" data-dojo-type="dojox/mobile/SearchBox" id="txt_search" placeHolder="Search Box" baseClass="mblTextBox mblSearchBox" pageSize="Infinity" ignoreCase="true" style="height: 32.66667396911621px; background-repeat: no-repeat; background-image: url('search.jpg'); width: 98%; background-position: center center;"></input>
+  <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_3" jsId="ItemFileReadStore_3" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+  <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="txt_list" select="single" style="height: 315.65972900390625px; background-color: transparent;" store="ItemFileReadStore_3" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view_graph" style="height: 100%;">
+<h1 label="Graph" data-dojo-type="dojox/mobile/Heading" id="graph_title" style="font-size: 14px;">
+     <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_graph" arrow="left" style="font-size: 10px;"></div>
+     <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" id="clear_graph" style="float: right;"></div>
+   </h1>
+   <div data-dojo-type="dojox/mobile/Pane"></div>
+   <div id="graph_box" style="height: 85%;"></div>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="view_user" style="height: 100%;">
+<h1 label="บริหารจัดการผู้ใช้งาน" data-dojo-type="dojox/mobile/Heading" id="view_user_title" style="font-size: 16px;">
+  <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="view_user_back" arrow="left"></div>
+  <div label="+" data-dojo-type="dojox/mobile/ToolBarButton" id="view_user_add" style="float: right;"></div>
+</h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_10" jsId="ItemFileReadStore_10" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view_user_list" store="ItemFileReadStore_10" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="add_user" style="height: 100%;">
+   <h1 label="เพิ่มผู้ใช้งาน" data-dojo-type="dojox/mobile/Heading">
+     <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="add_user_back" arrow="left"></div>
+   </h1>
+   <div dvwidget="html.richtext" style="height: 25px; width: 45%;" class="richText">
+     ชื่อ</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="add_name" style="width: 100%; height: 25px;"></input>
+   <div dvwidget="html.richtext" style="height: 25px; width: 45%;" class="richText">
+     นามสกุล</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="add_lname" style="width: 100%; height: 25px;"></input>
+   <div dvwidget="html.richtext" style="height: 25px; width: 45%;" class="richText">
+   รหัส รพ.(5หลัก)</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="add_hosp_id" style="width: 100%; height: 25px;"></input>
+   <div dvwidget="html.richtext" style="height: 25px; width: 45%;" class="richText">
+Username</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="add_user_name" style="width: 100%; height: 25px;"></input>
+   <div dvwidget="html.richtext" style="height: 25px; width: 45%;" class="richText">
+กำหนด password</div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="add_password" style="width: 100%; height: 25px;"></input>
+   <h1 label="ชื่อ :" data-dojo-type="dojox/mobile/Heading" style="text-align: right; background-color: transparent; background-image: none;">
+     <input type="text" data-dojo-type="dojox/mobile/TextBox" style="border: none; height: 100%; float: right; width: 60%; text-indent: 10px; background-color: transparent;"></input>
+   </h1>
+ </div>
+</body>
+</html>

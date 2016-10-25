@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>Untitled</title>
+<script type="text/javascript" src="lib/dojo/dojo/dojo.js" data-dojo-config="'parseOnLoad':true,'async':true,'packages':[{'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},{'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},{'name':'shapes','location':'../../shapes'},{'name':'zazl','location':'../../zazl'},{'name':'widgets','location':'../../custom'}],'themeMap':[['Android','',['themes/iphone/iphone.css']],['BlackBerry','',['themes/iphone/iphone.css']],['iPad','',['themes/iphone/iphone.css']],['iPhone','',['themes/iphone/iphone.css']],['.*','',['themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
+<script type="text/javascript">
+require([
+  "dijit/dijit",
+  "dojo/parser",
+  "maqetta/space",
+  "maqetta/AppStates",
+  "dijit/layout/BorderContainer",
+  "dijit/layout/ContentPane",
+  "dojox/mobile",
+  "dojox/mobile/deviceTheme",
+  "dojox/mobile/Button",
+  "dojox/mobile/ContentPane",
+  "dojox/mobile/TextBox",
+  "dojox/mobile/TextArea",
+  "dojo/hash",
+  "dijit/Calendar",
+  "dojox/mobile/DatePicker",
+  "dojox/mobile/SpinWheelDatePicker",
+  "dojox/mobile/ValuePickerDatePicker",
+  "dojox/mobile/Pane",
+  "dojox/mobile/SpinWheelTimePicker",
+  "dojox/mobile/TimePicker",
+  "dojox/mobile/ValuePickerTimePicker",
+  "dojox/io/xhrScriptPlugin",
+  "dojo/data/ItemFileReadStore",
+  "dojox/mobile/EdgeToEdgeDataList",
+  "dojox/mobile/SearchBox",
+  "dojox/mobile/ProgressIndicator"
+]);
+</script>
+<style>@import "themes/claro/claro.css";@import "app.css";
+</style>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="udf.js"></script>
+<script type="text/javascript" src="template.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></meta>
+</head>
+<body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" data-maq-ws="collapse" class="claro" data-maq-appstates="{}" id="myapp">
+ <div data-dojo-type="dojox/mobile/View" id="login" style="height: 100%;" selected="true">
+   <img src="Title.jpg" style="width: 100%;"></img>
+   <h1 label="User Name :" data-dojo-type="dojox/mobile/Heading" style="text-align: right; background-color: transparent; background-image: none; font-size: 16px;">
+    <input type="text" data-dojo-type="dojox/mobile/TextBox" id="user_name" placeHolder="ผู้ใช้งาน" style="border: none; height: 100%; background-color: transparent; background-image: none; float: right; text-indent: 10px; width: 60%; font-size: 16px;"></input>
+  </h1>
+   <h1 label="Password :" data-dojo-type="dojox/mobile/Heading" style="text-align: right; background-color: transparent; background-image: none; font-size: 16px;">
+    <input type="text" data-dojo-type="dojox/mobile/TextBox" id="password" placeHolder="รหัสผ่าน" style="border: none; height: 100%; background-color: transparent; background-image: none; float: right; text-indent: 10px; width: 60%; font-size: 16px;"></input>
+  </h1>
+   <button data-dojo-type="dojox/mobile/Button" id="btn_login" style="font-size: 14px; color: blue; font-weight: bold; width: 100%; height: 50px;">
+     Log In เข้าสู่ระบบ</button>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="main_view" style="height: 100%;">
+   <h1 label="เมนูหลัก" data-dojo-type="dojox/mobile/Heading" id="menu_title" style="font-size: 14px;">
+     <div label="Log Out" data-dojo-type="dojox/mobile/ToolBarButton" id="log_out" arrow="left"></div>
+   </h1>
+   <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_1" jsId="ItemFileReadStore_1" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;รายการ 1&quot;,&quot;moveTo&quot;:&quot;dummy&quot;},{&quot;label&quot;:&quot;รายการ 2&quot;,&quot;moveTo&quot;:&quot;dummy&quot;},{&quot;label&quot;:&quot;รายการ 3&quot;,&quot;moveTo&quot;:&quot;dummy&quot;}]}"></span>
+   <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="menu_list" select="single" style="height: 422.2916717529297px; overflow: auto; background-color: transparent;" store="ItemFileReadStore_1" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="select_dt" style="height: 100%;">
+   <h1 label="เลือกวัน-เวลา" data-dojo-type="dojox/mobile/Heading" id="select_dt_title" style="font-size: 14px;">
+     <div label="OK" data-dojo-type="dojox/mobile/ToolBarButton" id="back_select_dt" arrow="left" style="font-size: 10px;"></div>
+     <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" id="clear_dt" style="float: right;"></div>
+   </h1>
+   <input data-dojo-type="dijit/Calendar" id="calendar1" style="width: 100%;"></input>
+   <div data-dojo-type="dojox/mobile/Pane" style="height: 16.98263931274414px;"></div>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" value="เวลา" disabled="true" style="border: none; float: left; font-weight: bold; width: 91px; text-align: center; background-color: transparent; height: 50px; font-size: 20px;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="hr1" style="float: left; width: 60px; height: 50px; font-weight: bold; text-align: center; font-size: 24pt;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" disabled="true" style="border: none; font-size: 20pt; font-weight: bold; text-align: center; background-color: transparent; height: 50px; float: right; width: 84px;"></input>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="min1" style="float: right; width: 60px; height: 50px; font-weight: bold; text-align: center; font-size: 24pt;"></input>
+   <h1 data-dojo-type="dojox/mobile/Heading" style="border: none; font-size: 14px; background-color: transparent; background-image: none; height: 20.975697938232422px;"></h1>
+   <h1 label="Heading" data-dojo-type="dojox/mobile/Heading" id="show_dt" style="background-color: transparent; background-image: none;"></h1>
+ </div>
+ <div data-dojo-type="dojox/mobile/View" id="text_input" style="height: 100%;">
+<h1 label="Heading" data-dojo-type="dojox/mobile/Heading" id="txt_title" style="font-size: 14px;">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_txt" sync="true" toogle="true" arrow="left" style="font-size: 10px;"></div>
+    <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" id="txt_clear" style="float: right; font-size: 10px;"></div>
+  </h1>
+  <textarea data-dojo-type="dojox/mobile/TextArea" id="txt_return" placeHolder="Return Text" style="width: 100%; height: 59.33334px;"></textarea>
+  <input type="text" data-dojo-type="dojox/mobile/SearchBox" id="txt_search" placeHolder="Search Box" baseClass="mblTextBox mblSearchBox" pageSize="Infinity" ignoreCase="true" style="height: 32.66667396911621px; background-repeat: no-repeat; background-image: url('search.jpg'); width: 98%; background-position: center center;"></input>
+  <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_3" jsId="ItemFileReadStore_3" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+  <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="txt_list" select="single" style="height: 315.65972900390625px; background-color: transparent;" store="ItemFileReadStore_3" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="view_graph" style="height: 100%;">
+  <h1 label="Graph" data-dojo-type="dojox/mobile/Heading" id="graph_title" style="font-size: 14px;">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_graph" arrow="left" style="font-size: 10px;"></div>
+    <div label="Clear" data-dojo-type="dojox/mobile/ToolBarButton" style="float: right;"></div>
+  </h1>
+  <div data-dojo-type="dojox/mobile/Pane"></div>
+  <div id="graph_box" style="height: 85%;"></div>
+</div>
+</body>
+</html>
