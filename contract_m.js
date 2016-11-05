@@ -23,6 +23,7 @@ var ip_address = '';
 var lccontract_id = '';
 var ld1 = "";
 var getlogin = false;
+var vol=0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -555,7 +556,9 @@ require([
 			gcsource_view = "view4";
 			lcvar = 'ld1';
 			ltime = false;
-			view3.performTransition("select_dt", 1, "slide");
+			var lcd1;
+			var dobj=dialog('เลือกเดือนที่จัดซื้อ',alert(dobj),lcd1,"D",'เลือกเดือน');
+			//view3.performTransition("select_dt", 1, "slide");
 		});
 		on(view3_title, "click", function () {
 			back("back_view3", "view3", "view2");
@@ -587,6 +590,7 @@ require([
 			var cobj = selected_row('view4_list');
 			var contract_id = cobj.contract_id;
 			var reagent_id = cobj.reagent_id;
+			dialog('เพิ่มข้อมูลจัดซื้อ',alert(vol),vol,"N","จำนวน (test)..");
 			var vol = prompt("ระบุจำนวนซื้อ (Test)..");
 			if (vol > 0) {
 				var cost = prompt("ระบุมูลค่าซื้อ (บาท)...");

@@ -10,6 +10,7 @@
 
 // Get Age คำนวณอายุ
 function getAge(dateString, dateCal) {
+		if (dateCal == undefined) {dateCal = "";}
 		if (dateCal.length == 0)
 		{
 			var now = new Date();
@@ -122,6 +123,7 @@ function tsdate(edate, withtime)
  {
  	if (edate == "") { return "-";}
  	else {
+		 if (typeof(edate) == "string") {edate = new Date(edate);}
 	 	var tday = edate.getDate();
 	 	var tmonth0 = edate.getMonth();
 	 	var tmonth = "";
@@ -253,12 +255,19 @@ function list(cobject, cphp, cheader) {
 	require([
  	"dojo/ready",
  	"dijit/registry",
+	"dojo/_base/window",
+	"dojox/mobile/ProgressIndicator",
  	"dojo/data/ItemFileReadStore",
  	"dojo/data/ItemFileWriteStore",
  	"dojo/_base/xhr"
  	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
-	 ], function(ready, reg, ifrs, ifws, xhr){
+	 ], function(ready, reg, win, ProgressIndicator, ifrs, ifws, xhr){
 		ready(function(){
+			//var prog = new ProgressIndicator({size:40, colors:['#E60012','#F39800','#FFF100','#8FC31F','#009944','#009E96',
+            //  '#00A0E9','#0068B7','#1D2088','#920783','#E4007F','#E5004F']});
+			var prog = ProgressIndicator.getInstance();
+    		win.body().appendChild(prog.domNode);
+    		prog.start(); // start the progress indicator
 			var listObj = reg.byId(cobject);
 			var new_store = new ifws({data:{items:[]}});
 			listObj.setStore(new_store);
@@ -276,6 +285,8 @@ function list(cobject, cphp, cheader) {
 					cMacro = eval('storeData = ' + php_return);
 					listStore = new ifrs({data:storeData});
 					listObj.setStore(listStore);
+					prog.stop(); // stop the progress indicator
+					return listObj;
 				},
 				error: function() {	}
 			});
@@ -467,12 +478,24 @@ function selected_clear(clist) {
 	});
 }
 //////////////////////////////////////////////////////////////////////////
-// Function สำหรับ Query ข้อมูลจาก mySQL                          ///////////
-// Parameter = php และ เงื่อนไข xxx.php?yyy=999                  ///////////
-// Return เพียง 1 Record เป็น Object ที่มีชื่อ Field เป็น Properties ////////////
+// Function สำหรับ Query ข้อมูลจาก mySQL                                ////
+// Parameter = php และ เงื่อนไข xxx.php?yyy=999                         ////
+// nrow = จำนวน Record ที่ Return เป็น Object ที่มีชื่อ Field เป็น Properties ////
 //////////////////////////////////////////////////////////////////////////
+
 function php2obj(cphp, nrow) {
- 	 var xhrArgs = {
+//	require([
+// 	"dojo/ready",
+// 	"dijit/registry",
+//	"dojo/_base/window",
+//	"dojox/mobile/ProgressIndicator"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+//	 ], function(ready, reg, win, ProgressIndicator){
+//		var prog = ProgressIndicator.getInstance();
+//		win.body().appendChild(prog.domNode);
+//		prog.start(); // start the progress indicator
+//	 });
+ 	var xhrArgs = {
     	url: ip_address + cphp,
     	handleAs: "text",
     	sync: true,
@@ -505,10 +528,63 @@ function php2obj(cphp, nrow) {
 		return eval(creturn);
 	}
 }
-/////////////////////////////////////////////////////////////////////////////////////////////
 
-//// แสดงกราฟ ส่งค่า DataList, Field ค่าที่จะแสดง, ชื่อ div ที่จะแสดงกราฟ, ประเภทของกราฟ, interval major and interval minor 
-function graph(clistobj, cvalfield, cdiv, ctype, nstep1, nstep2) {
+//// Fill EdgetoEdgeDataList ด้วยข้อมูลจาก PHP
+// Function สำหรับ Fill EdgetoEdge List ////////////////////
+function php2obj1(cphp, nrow) {
+	require([
+ 	"dojo/ready",
+ 	"dijit/registry",
+	"dojo/_base/window",
+	"dojox/mobile/ProgressIndicator"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, reg, win, ProgressIndicator){
+		ready(function(){
+			//var prog = new ProgressIndicator({size:40, colors:['#E60012','#F39800','#FFF100','#8FC31F','#009944','#009E96',
+            //  '#00A0E9','#0068B7','#1D2088','#920783','#E4007F','#E5004F']});
+			var prog = ProgressIndicator.getInstance();
+    		win.body().appendChild(prog.domNode);
+    		prog.start(); // start the progress indicator
+			var xhrArgs = {
+				url: ip_address + cphp,
+				handleAs: "text",
+				sync: true,
+				load: function(data){},
+				error: function(error){}
+			}
+			// Call the asynchronous xhrGet
+			var deferred = dojo.xhrGet(xhrArgs);
+			var creturn = deferred.results;
+			ccheck = creturn.toString();
+			ccheck = ccheck.trim();
+			if (typeof(nrow) == "undefined") {
+				if (ccheck.substr(0, 1) == "{") {
+					var creturn = creturn[0].replace(/[\n\r]*/g,'');
+					var cmacro = "ret_obj = " + creturn;
+					eval(cmacro);
+					var n = ccheck.search("items");
+					if (n > 0) {
+						if (typeof(ret_obj.items[0]) == "undefined") {
+						return "";}
+						else {return ret_obj.items[0];}
+					}
+					else {return ret_obj;}
+				}
+				else {return ccheck.replace(",", "").trim();}
+			} else {
+				var nstart = ccheck.search("items");
+				var nlen = ccheck.search("]");
+				var creturn = ccheck.substr(nstart, nlen-nstart+1);
+				return eval(creturn);
+			}
+		});
+	});
+}
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//// แสดงกราฟ ส่งค่า DataList, Field ค่าที่จะแสดง, ชื่อ div ที่จะแสดงกราฟ, ประเภทของกราฟ, interval major and interval minor, Field ที่จะเป็น Label ถ้าไม่ระบุจะใช้ Field ชื่อ label
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function graph(clistobj, cvalfield, cdiv, ctype, nstep1, nstep2, clabel) {
 	if (nstep1 == undefined) {nstep1 = 10};
 	if (nstep2 == undefined) {nstep2 = 1};
 	require([
@@ -537,8 +613,13 @@ function graph(clistobj, cvalfield, cdiv, ctype, nstep1, nstep2) {
 		   	var item_cnt = item.length;
 			for (i = 0; i < item_cnt; i++)
 			{
-				item_list[i] = {y: parseFloat(item[i][cvalfield]), text: item[i].label, tooltip: item[i].label + "=" + parseFloat(item[i][cvalfield])};
-				item_label[i] = {value: i, text: item[i].label};
+				var glabel = item[i].label;
+				if (clabel != undefined) {
+					var cmacro = "glabel = item[i]." + clabel;
+					eval(cmacro);
+				}
+				item_list[i] = {y: parseFloat(item[i][cvalfield]), text: glabel, tooltip: glabel + "=" + parseFloat(item[i][cvalfield])};
+				item_label[i] = {value: i, text: glabel};
 			}
 			var x_chart = Chart(dom.byId(cdiv));
 			x_chart.destroy();
@@ -573,6 +654,7 @@ function mysave(cphp, ccode) {
 			},
 			error: function() {alert ("บันทึกข้อมูลไม่สำเร็จ !!!");}
 		});
+		
 	});
 }
 ////////////////////////////////////////////////////////
@@ -680,6 +762,34 @@ function txt_search(cbox, clist) {
 	});
 }
 
+// Function สำหรับ search_box ////////////////////
+function box_search(cbox, clist) {
+	require([
+ 	"dojo/ready",
+ 	"dijit/registry",
+ 	"dojo/data/ItemFileReadStore",
+ 	"dojo/data/ItemFileWriteStore",
+ 	"dojo/on",
+ 	"dojo/_base/xhr"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, reg, ifrs, ifws, on, xhr){
+		ready(function(){
+			var search_box = reg.byId(cbox);
+			var search_list = reg.byId(clist);
+
+			// Click ที่ Box เพื่อค้นหา
+			on(search_box, "click", function() {
+				search_list.setQuery({label:"*"});
+			});
+			// Search Lab List
+			on(search_box, "keyup", function() {
+				lcsearchtext = search_box.get("value").trim().toUpperCase();
+	    		search_list.setQuery({label:lcsearchtext + "*"});
+			});
+		});
+	});
+}
+
 // Decode Password
 function decode(ccode) {
 	var pnumber = parseInt(ccode.substr(0, 1));
@@ -754,3 +864,194 @@ function back(cbtn, cfrom, cto, cclear) {
 	});
 }
 ////////////////////////////////////////////////////////
+//// Function สร้าง Dialog รับค่า Parameters ccaption=หัวช้อ, ccode=คำสั่งที่ต้องการให้ run เมื่อกดปุ่ม OK, cvar1=ตัวแปร 1, ctype1=ประเภทตัวแปร C/N/D/T, clabel1=label ของตัวแปร 1
+////////////////////////////////////////////////////////
+function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2, cvar3, ctype3, clabel3, cvar4, ctype4, clabel4, cvar5, ctype5, clabel5) {
+	require([
+ 	"dojo/ready",
+ 	"dijit/registry",
+ 	"dijit/Dialog",
+   	"dijit/form/TextBox",
+   	"dijit/form/Button",
+	"dijit/form/DateTextBox", 
+    "dijit/form/TimeTextBox",
+ 	"dojo/on"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, reg, Dialog, TextBox, Button, DateTextBox, TimeTextBox, on){
+		ready(function() {
+			// สร้าง Diaqlog
+			var myDialog = new Dialog({
+		        title: ccaption,
+		        content: "",
+		        style: "width: 85%"
+		    })
+		    // สร้าง Content Pane
+		    var contentPane = dojo.create("div", {
+		        class: "dijitDialogPaneContentArea", width: "100%", height: "auto"
+			    }, myDialog.containerNode);
+		    
+			// Variable 1 //////////////////////////////////////////////////////////////
+			if (cvar1 != "" && cvar1 != undefined) {
+				if (ctype1.trim().toUpperCase() == "D") {
+					var box1 = new DateTextBox({placeHolder: clabel1}).placeAt(contentPane);
+				} else if (ctype1.trim().toUpperCase() == "T") {
+					var box1 = new TimeTextBox({placeHolder: clabel1}).placeAt(contentPane);
+				} else {
+					var box1 = new TextBox({placeHolder: clabel1}).placeAt(contentPane);
+				}
+				box1.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+			// Variable 2 //////////////////////////////////////////////////////////////
+			if (cvar2 != "" && cvar2 != undefined) {
+				if (ctype2.trim().toUpperCase() == "D") {
+					var box2 = new DateTextBox({placeHolder: clabel2}).placeAt(contentPane);
+				} else if (ctype2.trim().toUpperCase() == "T") {
+					var box2 = new TimeTextBox({placeHolder: clabel2}).placeAt(contentPane);
+				} else {
+					var box2 = new TextBox({placeHolder: clabel2}).placeAt(contentPane);
+				}
+				box2.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+		    // Variable 3 //////////////////////////////////////////////////////////////
+			if (cvar3 != "" && cvar3 != undefined) {
+				if (ctype3.trim().toUpperCase() == "D") {
+					var box3 = new DateTextBox({placeHolder: clabel3}).placeAt(contentPane);
+				} else if (ctype3.trim().toUpperCase() == "T") {
+					var box3 = new TimeTextBox({placeHolder: clabel3}).placeAt(contentPane);
+				} else {
+					var box3 = new TextBox({placeHolder: clabel3}).placeAt(contentPane);
+				}
+				box3.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+			// Variable 4 //////////////////////////////////////////////////////////////
+			if (cvar4 != "" && cvar4 != undefined) {
+				if (ctype4.trim().toUpperCase() == "D") {
+					var box4 = new DateTextBox({placeHolder: clabel4}).placeAt(contentPane);
+				} else if (ctype4.trim().toUpperCase() == "T") {
+					var box4 = new TimeTextBox({placeHolder: clabel4}).placeAt(contentPane);
+				} else {
+					var box4 = new TextBox({placeHolder: clabel4}).placeAt(contentPane);
+				}
+				box4.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+			// Variable 5 //////////////////////////////////////////////////////////////
+			if (cvar5 != "" && cvar5 != undefined) {
+				if (ctype5.trim().toUpperCase() == "D") {
+					var box5 = new DateTextBox({placeHolder: clabel5}).placeAt(contentPane);
+				} else if (ctype5.trim().toUpperCase() == "T") {
+					var box5 = new TimeTextBox({placeHolder: clabel5}).placeAt(contentPane);
+				} else {
+					var box5 = new TextBox({placeHolder: clabel5}).placeAt(contentPane);
+				}
+				box5.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+
+			// สร้าง Action Pane   
+			var actionBar = dojo.create("div", {
+	        class: "dijitDialogPaneContentArea", width: "90%"
+		    }, myDialog.domNode);
+			// สร้างปุ่ม OK, Cancel
+			var btn_ok = new Button({label: "OK"}).placeAt(actionBar);
+			btn_ok.containerNode.style.width = "120px";
+			
+		    var btn_cancel = new Button({label: "Cancel"}).placeAt(actionBar);
+			btn_cancel.containerNode.style.width = "120px";
+			btn_cancel.domNode.style.float = "right";
+
+			//alert("OK");
+			//debugger;
+			
+		    myDialog.show();
+	
+		    on(btn_ok, "click", function() {
+				// var1
+				if (cvar1 != "" && cvar1!= undefined) {
+					if (ctype1.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box1.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar1 + "=" + cdate;
+					} else if (ctype1.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box1.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar1 + "=" + cdate;
+					} else {
+						var cmacro = cvar1 + "='" + box1.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var2
+				if (cvar2 != "" && cvar2 != undefined) {
+					if (ctype2.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box2.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar2 + "=" + cdate;
+					} else if (ctype2.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box2.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar2 + "=" + cdate;
+					} else {
+						var cmacro = cvar2 + "='" + box2.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var3
+				if (cvar3 != "" && cvar3 != undefined) {
+					if (ctype3.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box3.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar3 + "=" + cdate;
+					} else if (ctype3.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box3.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar3 + "=" + cdate;
+					} else {
+						var cmacro = cvar3 + "='" + box3.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var4
+				if (cvar4 != "" && cvar4 != undefined) {
+					if (ctype4.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box4.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar4 + "=" + cdate;
+					} else if (ctype4.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box4.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar4 + "=" + cdate;
+					} else {
+						var cmacro = cvar4 + "='" + box4.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var5
+				if (cvar5 != "" && cvar5 != undefined) {
+					if (ctype5.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box5.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar5 + "=" + cdate;
+					} else if (ctype5.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box5.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar5 + "=" + cdate;
+					} else {
+						var cmacro = cvar5 + "='" + box5.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+
+				eval(ccode);
+		    	myDialog.hide();
+		    });
+			
+		    on(btn_cancel, "click", function() {
+		    	myDialog.hide();
+		    });
+		});
+	});
+}
