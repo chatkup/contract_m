@@ -61,7 +61,8 @@ include 'mbase.php';
 //WHERE u.level_id=ul.level_id AND u.hosp_id=h.hosp_id AND u.is_cancel=0";
 $strSQL="SELECT u.*, concat(u.user_id,') ',u.fname, ' ' , u.lname) AS label, h.hosp_name AS rightText
 FROM user u, hospitals h
-WHERE u.is_cancel=0 AND u.hosp_id=h.hosp_id";
+WHERE u.is_cancel=0 AND u.hosp_id=h.hosp_id
+ORDER BY u.user_id";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 

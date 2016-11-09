@@ -249,6 +249,39 @@ function search(cbox, cpane, clist) {
 }
 ////////////////////////////////////////////////////////
 
+//// Function for ProgressIndicator
+function pgstart() {
+	require([
+ 	"dojo/ready",
+	"dojo/_base/window",
+	"dojox/mobile/ProgressIndicator"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, win, ProgressIndicator){
+		ready(function(){
+			var prog = ProgressIndicator.getInstance();
+    		win.body().appendChild(prog.domNode);
+			prog.start();
+		});
+	 });
+}
+
+//// Function for ProgressIndicator
+function pgstop() {
+	require([
+ 	"dojo/ready",
+	"dojo/_base/window",
+	"dojox/mobile/ProgressIndicator"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, win, ProgressIndicator){
+		ready(function(){
+			var prog = ProgressIndicator.getInstance();
+    		win.body().appendChild(prog.domNode);
+			prog.stop();
+		});
+	 });
+}
+////////////////////////////////////////////////////////////
+
 //// Fill EdgetoEdgeDataList ด้วยข้อมูลจาก PHP
 // Function สำหรับ Fill EdgetoEdge List ////////////////////
 function list(cobject, cphp, cheader) {
@@ -294,6 +327,51 @@ function list(cobject, cphp, cheader) {
 	});
 }
 ////////////////////////////////////////////////////////
+//// Fill EdgetoEdgeDataList ด้วยข้อมูลจาก PHP
+// Function สำหรับ Fill EdgetoEdge List ////////////////////
+function list1(cobject, cphp, cheader) {
+	require([
+	"dojo/ready",
+	"dijit/registry",
+	"dojo/_base/window",
+	"dojox/mobile/ProgressIndicator",
+	"dojo/data/ItemFileReadStore",
+	"dojo/data/ItemFileWriteStore",
+	"dojo/_base/xhr"
+	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	], function(ready, reg, win, ProgressIndicator, ifrs, ifws, xhr){
+		return ready(function(){
+			var prog = ProgressIndicator.getInstance();
+			win.body().appendChild(prog.domNode);
+			prog.start(); // start the progress indicator
+			var listObj = reg.byId(cobject);
+			var new_store = new ifws({data:{items:[]}});
+			listObj.setStore(new_store);
+			var cret = xhr.get({
+				url: ip_address + cphp,
+				headers: { "X-Requested-With": null },
+				content: {},
+				load: function(result) {
+					//if (cobject == "staff_list") {alert (result);}
+					// ไม่ควรมี Field ชื่อ id
+					if (typeof(cheader) == "undefined") {var head = "items:[";}
+					else {var head = 'items:[{unique_id: 0, label: cheader, value : "0", header: true}, ';}
+					php_return = result.replace(/[\n\r]*/g,'');
+					php_return = php_return.replace("items:[", head);
+					cMacro = eval('storeData = ' + php_return);
+					listStore = new ifrs({data:storeData});
+					listObj.setStore(listStore);
+					prog.stop(); // stop the progress indicator
+					return php_return;
+				},
+				error: function() {}
+			});
+			alert (cret);
+			debugger;
+			return cret;
+		});
+	});
+}
 
 function store(cobject) {
 	require([
@@ -866,18 +944,21 @@ function back(cbtn, cfrom, cto, cclear) {
 ////////////////////////////////////////////////////////
 //// Function สร้าง Dialog รับค่า Parameters ccaption=หัวช้อ, ccode=คำสั่งที่ต้องการให้ run เมื่อกดปุ่ม OK, cvar1=ตัวแปร 1, ctype1=ประเภทตัวแปร C/N/D/T, clabel1=label ของตัวแปร 1
 ////////////////////////////////////////////////////////
-function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2, cvar3, ctype3, clabel3, cvar4, ctype4, clabel4, cvar5, ctype5, clabel5) {
+function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2, cvar3, ctype3, clabel3, cvar4, ctype4, clabel4, 
+				cvar5, ctype5, clabel5, cvar6, ctype6, clabel6, cvar7, ctype7, clabel7, cvar8, ctype8, clabel8) {
+	ccode = ccode.trim();
 	require([
  	"dojo/ready",
  	"dijit/registry",
  	"dijit/Dialog",
    	"dijit/form/TextBox",
+	"dijit/form/Textarea",
    	"dijit/form/Button",
 	"dijit/form/DateTextBox", 
     "dijit/form/TimeTextBox",
  	"dojo/on"
  	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
-	 ], function(ready, reg, Dialog, TextBox, Button, DateTextBox, TimeTextBox, on){
+	 ], function(ready, reg, Dialog, TextBox, Textarea, Button, DateTextBox, TimeTextBox, on){
 		ready(function() {
 			// สร้าง Diaqlog
 			var myDialog = new Dialog({
@@ -897,7 +978,19 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 				} else if (ctype1.trim().toUpperCase() == "T") {
 					var box1 = new TimeTextBox({placeHolder: clabel1}).placeAt(contentPane);
 				} else {
-					var box1 = new TextBox({placeHolder: clabel1}).placeAt(contentPane);
+					var calert = ccode.substr(0, 5);
+					if(calert.toUpperCase()=="ALERT") {
+						ccode = ccode.substr(5);
+						var box1 = new Textarea({placeHolder: clabel1}).placeAt(contentPane);
+						box1.domNode.style.border = "none";
+						box1.domNode.style.fontSize = "20px";
+						box1.set("displayedValue", clabel1);
+						box1.set("disabled", true);
+						box1.textbox.style.color = "Blue";
+						box1.textbox.style.textAlign="center";
+					} else {
+						var box1 = new TextBox({placeHolder: clabel1}).placeAt(contentPane);
+					}
 				}
 				box1.domNode.style.width = "100%";
 			}
@@ -950,6 +1043,42 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 				box5.domNode.style.width = "100%";
 			}
 			////////////////////////////////////////////////////////////////////////////
+			// Variable 6 //////////////////////////////////////////////////////////////
+			if (cvar6 != "" && cvar6 != undefined) {
+				if (ctype6.trim().toUpperCase() == "D") {
+					var box6 = new DateTextBox({placeHolder: clabel6}).placeAt(contentPane);
+				} else if (ctype6.trim().toUpperCase() == "T") {
+					var box6 = new TimeTextBox({placeHolder: clabel6}).placeAt(contentPane);
+				} else {
+					var box6 = new TextBox({placeHolder: clabel6}).placeAt(contentPane);
+				}
+				box6.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+			// Variable 7 //////////////////////////////////////////////////////////////
+			if (cvar7 != "" && cvar7 != undefined) {
+				if (ctype7.trim().toUpperCase() == "D") {
+					var box7 = new DateTextBox({placeHolder: clabel7}).placeAt(contentPane);
+				} else if (ctype7.trim().toUpperCase() == "T") {
+					var box7 = new TimeTextBox({placeHolder: clabel7}).placeAt(contentPane);
+				} else {
+					var box7 = new TextBox({placeHolder: clabel7}).placeAt(contentPane);
+				}
+				box7.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
+			// Variable 8 //////////////////////////////////////////////////////////////
+			if (cvar8 != "" && cvar8 != undefined) {
+				if (ctype8.trim().toUpperCase() == "D") {
+					var box8 = new DateTextBox({placeHolder: clabel8}).placeAt(contentPane);
+				} else if (ctype8.trim().toUpperCase() == "T") {
+					var box8 = new TimeTextBox({placeHolder: clabel8}).placeAt(contentPane);
+				} else {
+					var box8 = new TextBox({placeHolder: clabel8}).placeAt(contentPane);
+				}
+				box8.domNode.style.width = "100%";
+			}
+			////////////////////////////////////////////////////////////////////////////
 
 			// สร้าง Action Pane   
 			var actionBar = dojo.create("div", {
@@ -957,15 +1086,17 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 		    }, myDialog.domNode);
 			// สร้างปุ่ม OK, Cancel
 			var btn_ok = new Button({label: "OK"}).placeAt(actionBar);
-			btn_ok.containerNode.style.width = "120px";
+			btn_ok.containerNode.style.width = "100px";
 			
 		    var btn_cancel = new Button({label: "Cancel"}).placeAt(actionBar);
-			btn_cancel.containerNode.style.width = "120px";
+			btn_cancel.containerNode.style.width = "100px";
 			btn_cancel.domNode.style.float = "right";
 
 			//alert("OK");
 			//debugger;
 			
+			myDialog.autofocus = false;
+			btn_ok.focus(true);
 		    myDialog.show();
 	
 		    on(btn_ok, "click", function() {
@@ -1041,6 +1172,51 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 						var cmacro = cvar5 + "=" + cdate;
 					} else {
 						var cmacro = cvar5 + "='" + box5.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var6
+				if (cvar6 != "" && cvar6 != undefined) {
+					if (ctype6.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box6.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar6 + "=" + cdate;
+					} else if (ctype6.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box6.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar6 + "=" + cdate;
+					} else {
+						var cmacro = cvar6 + "='" + box6.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var7
+				if (cvar7 != "" && cvar7 != undefined) {
+					if (ctype7.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box7.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar7 + "=" + cdate;
+					} else if (ctype7.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box7.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar7 + "=" + cdate;
+					} else {
+						var cmacro = cvar7 + "='" + box7.get("value") + "'";
+					}
+					eval(cmacro);
+				}
+				// var8
+				if (cvar8 != "" && cvar8 != undefined) {
+					if (ctype8.trim().toUpperCase() == "D") {
+						var ddate0 = new Date(box8.get("value"));
+						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
+						var cmacro = cvar8 + "=" + cdate;
+					} else if (ctype8.trim().toUpperCase() == "T") {
+						var ddate0 = new Date(box8.get("value"));
+						var cdate = "'" + ddate0.getHours().toString() + ":" + ddate0.getMinutes().toString() + "'"
+						var cmacro = cvar8 + "=" + cdate;
+					} else {
+						var cmacro = cvar8 + "='" + box8.get("value") + "'";
 					}
 					eval(cmacro);
 				}

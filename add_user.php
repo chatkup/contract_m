@@ -52,18 +52,17 @@ include 'mbase.php';
 //$a = $_GET['user_id'];
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
-$contract_id = $_GET['contract_id'];
-$reagent_id=$_GET['reagent_id'];
-$vol=$_GET['vol'];
-$cost=$_GET['cost'];
-$lmonth=$_GET['lmonth'];
-$user_id=$_GET['user_id'];
+$fname = $_GET['fname'];
+$lname=$_GET['lname'];
+$username=$_GET['user_name'];
+$password=$_GET['password'];
+$level=$_GET['level_id'];
 $hosp_id=$_GET['hosp_id'];
 
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="INSERT into purchase_detail (contract_id,reagent_id,purchase_vol,purchase_cost,purchase_date,user_id,hosp_id)
-VALUES('".$contract_id."','".$reagent_id."','".$vol."','".$cost."','".$lmonth."','".$user_id."','".$hosp_id."')";
+$strSQL="INSERT into user (fname,lname,user_name,password,level_id,is_cancel,hosp_id)
+VALUES('".$fname."','".$lname."','".$username."','".$password."','".$level."',0,'".$hosp_id."')";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 
