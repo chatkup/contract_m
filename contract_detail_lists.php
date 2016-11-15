@@ -57,9 +57,11 @@ $b=$_GET['contract_id'];
 
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="SELECT c.*, ch.hosp_id AS label, concat('เลขที่ ',c.contract_no) AS rightText  
-FROM contract c, contract_hosp ch
-WHERE c.contract_id=ch.contract_id AND ch.hosp_id='".$a."' AND c.contract_id='".$b."'";
+$strSQL="SELECT c.*,cd.*, ch.hosp_id AS label, concat('เลขที่ ',c.contract_no) AS rightText, 
+sum(cd.contract_vol) AS sum_vol, sum(cd.contract_cost) AS sum_cost  
+FROM contract c, contract_hosp ch, contract_detail cd
+WHERE c.contract_id=ch.contract_id AND ch.hosp_id='".$a."' AND c.contract_id='".$b."'
+AND c.contract_id=cd.contract_id AND c.is_cancel=0 AND cd.is_cancel=0 AND cd.is_cancel=0 GROUP BY cd.contract_id";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 

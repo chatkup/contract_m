@@ -52,28 +52,28 @@ include 'mbase.php';
 //$a = $_GET['user_id'];
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
+$contract_no = $_GET['contract_no'];
+$comment=$_GET['comment'];
+$sign_date=$_GET['sign_date'];
+$start_date=$_GET['start_date'];
+$stop_date=$_GET['stop_date'];
+$hosp_id=$_GET['hosp_id'];
 
-$b = $_GET['hosp_id'];
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-//$strSQL="SELECT c.contract_no AS label, c.*   
-//FROM contract_hosp ch, contract_detail cd, reagent_detail r, contract c 
-//where ch.hosp_id='".$b."' and c.is_cancel=0 AND ch.contract_id=cd.contract_id 
-//AND cd.reagent_id=r.reagent_id AND cd.contract_id=c.contract_id
-//ORDER BY c.contract_id ";
 
-$strSQL="SELECT concat(c.contract_no,': ',comment) AS label,c.* , ch.* 
-FROM contract_hosp ch, contract c 
-WHERE ch.hosp_id='".$b."' and ch.contract_id=c.contract_id
-AND c.is_cancel=0 AND ch.is_cancel=0 ORDER BY c.contract_no";
-//$strSQL="SELECT concat('สัญญา ',c.comment,'เลขที่ ',c.contract_no) AS label,concat('มูลค่า: ',sum(p.purchase_cost),' บาท') AS rightText,
-//p.*,sum(purchase_cost) AS purchase_costs   
-//FROM purchase_detail p, contract_detail cd, reagent_detail r, contract c 
-//where p.hosp_id='".$b."' and p.is_cancel=0 AND p.contract_id=cd.contract_id 
-//AND cd.reagent_id=r.reagent_id AND cd.contract_id=c.contract_id
-//group by p.contract_id ORDER BY p.contract_id ";
+// Insert เข้า contract
+$strSQL="INSERT into contract(contract_no,comment,sign_date,start_date,stop_date,is_cancel,status)
+VALUES('".$contract_no."','".$comment."','".$sign_date."','".$start_date."','".$stop_date."',0,'active')";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
+
+//Insert เข้า contract_hosp โดยหา contract_id ที่เพิ่มเข้าใหม่ก่อน
+$strSQL="SELECT contract_id FROM contract WHERE contract_no='".$contract_no."' LIMIT 1";
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ได้ผล Query แล้วนำมาสร้างเป็น Text รูปแบบ JSON Object เพื่อนำไปใช้ต่อโดย Javascript
@@ -120,9 +120,16 @@ for ($n=0; $n<=$record; $n++)
 	{
 		$return = $return.$row.'}';
 	}
-	$row = "";
-	$value = '';
+	//$row = "";
+	//$value = '';
 }
 echo $return."]}";
+
+$contract_id=$value;
+$strSQL="INSERT into contract_hosp(contract_id,hosp_id,is_cancel)
+VALUES('".$contract_id."','".$hosp_id."',0)";
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
+
 mysql_free_result($objQuery);
 ?> 

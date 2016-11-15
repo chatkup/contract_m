@@ -154,7 +154,7 @@ require([
 				lchosp = uobj.hosp_id;
 				var lcname = uobj.fname;
 				getlogin = true;
-				list("view2_list", "sum_buy.php?hosp_id=" + lchosp, "จำนวนและมูลค่าที่ซื้อแล้ว");
+				list("view2_list", "sum_buy.php?hosp_id=" + lchosp, "สัญญาทั้งหมด");
 				list("view3_list", "contract_lists.php?hosp_id=" + lchosp, "เลือกสัญญาที่ต้องการบันทึกข้อมูล");
 				list("view_user_list", "user_list.php");
 				list("add_user_list", "hosp_list.php", "เลือกชื่อโรงพยาบาล");
@@ -232,6 +232,7 @@ require([
 		var view2_list = reg.byId("view2_list");
 		var view2_choose = reg.byId("view2_choose");
 		var view2_back = reg.byId("view2_back");
+		var view2_add = reg.byId("view2_add");
 
 		var new_store = new ifws({ data: { items: [] } });
 		view2_choose.setStore(new_store);
@@ -274,8 +275,10 @@ require([
 			var c_no = "";
 			c_no = cd2obj.contract_no;
 			c_comment = cd2obj.comment;
-			c_start = cd2obj.start_date;
-			c_stop = cd2obj.stop_date;
+			c_start = tsdate(cd2obj.start_date);
+			c_stop = tsdate(cd2obj.stop_date);
+			n_vol = cd2obj.sum_vol;
+			n_cost = cd2obj.sum_cost;
 			var new_store = new ifws({ data: { items: [] } });
 			view_contract_list.setStore(new_store);
 			var List_add = view_contract_list.store.newItem({ label: "รายละเอียดสัญญา", header: true });
@@ -283,12 +286,19 @@ require([
 			var List_add = view_contract_list.store.newItem({ label: "เลขที่สัญญา", value: "001", rightText: c_no });
 			var List_add = view_contract_list.store.newItem({ label: "วันเริ่มต้น", value: "002", rightText: c_start });
 			var List_add = view_contract_list.store.newItem({ label: "วันสิ้นสุด", value: "003", rightText: c_stop });
-
+			var List_add = view_contract_list.store.newItem({ label: "จำนวน", value: "005", rightText: n_vol + ' Test' });
+			var List_add = view_contract_list.store.newItem({ label: "มูลค่า", value: "006", rightText: n_cost + ' บาท' });
+			///แสดงยอดสั่งซื้อใน view_contract_list2
+			list("view_contract_list2", "sum_by_reagent.php?hosp_id=" + lchosp + "&contract_id=" + lccontract_id, "มูลค่าซื้อแล้ว");
 			view2.performTransition("view_contract", 1, "slide");
 		});
 		on(view2_title, "click", function () {
 			back("view2_back", "view2", "view_menu");
 		});
+		on(view2_add, "click", function () {
+			dialog("เพิ่มสัญญา", 'var csave="add_contract.php?contract_no="+lcontract_no+"&comment="+lcomment+"&sign_date="+lsign+"&start_date="+lstart+"&stop_date="+lstop+"&hosp_id="+lchosp;mysave(csave)', "lcontract_no", "C", "เลขที่สัญญา", "lcomment", "C", "รายละเอียดสัญญา", "lsign", "D", "วันเซ็นสัญญา", "lstart", "D", "วันเริ่มสัญญา", "lstop", "D", "วันสิ้นสุดสัญญา");
+		});
+
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////
@@ -301,7 +311,7 @@ require([
 		var back_view_contract = reg.byId("back_view_contract");
 		var view_contract_title = reg.byId("view_contract_title");
 		var view_contract_list = reg.byId("view_contract_list");
-
+		var view_contract_list2 = reg.byId("view_contract_list2");
 
 		//////////////////
 		//// Function ////
