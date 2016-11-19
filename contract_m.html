@@ -89,7 +89,7 @@ require([
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="view1_user" placeHolder="User Name" style="border: none; float: right; height: 100%; width: 60%; background-color: transparent;"></input>
    </h1>
    <h1 label="Password :" data-dojo-type="dojox/mobile/Heading" style="border: none; font-size: 75%; height: 40px; background-image: none; color: black; text-align: right; background-color: white;">
-    <input type="text" data-dojo-type="dojox/mobile/TextBox" id="view1_passw" style="border: none; border-radius: 6px; -moz-border-radius: 6px; float: right; height: 100%; width: 60%; background-color: transparent;" placeHolder="Password"></input>
+    <input type="password" data-dojo-type="dojox/mobile/TextBox" id="view1_passw" style="border: none; border-radius: 6px; -moz-border-radius: 6px; float: right; height: 100%; width: 60%; background-color: transparent;" placeHolder="Password"></input>
   </h1>
    <button data-dojo-type="dojox/mobile/Button" id="view1_login" style="font-size: 100%; position: relative; width: 100%; height: 40px;">
      
@@ -126,6 +126,27 @@ require([
 <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_11" jsId="ItemFileReadStore_11" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
 <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view_contract_list2" store="ItemFileReadStore_11" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
 </div>
+ <div data-dojo-type="dojox/mobile/View" id="add_reagent" style="height: 100%;">
+  <h1 label="Add Reagent" data-dojo-type="dojox/mobile/Heading" id="add_reagent_title">
+   <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="add_reagent_back" arrow="left"></div>
+ </h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_12" jsId="ItemFileReadStore_12" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_reagent_list" style="overflow: scroll; height: 258px;" store="ItemFileReadStore_12" query="{&quot;label&quot;:&quot;*&quot;}" select="multiple"></ul>
+<h1 data-dojo-type="dojox/mobile/Heading" style="height: 10px;"></h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_13" jsId="ItemFileReadStore_13" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;moveTo&quot;:&quot;dummy&quot;}]}"></span>
+<button data-dojo-type="dojox/mobile/Button" id="add_reagent_save" style="width: 100%;">
+SAVE</button>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_reagent_list2" store="ItemFileReadStore_13" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="reagent_contract" style="height: 100%;">
+   <h1 label="น้ำยาในสัญญา" data-dojo-type="dojox/mobile/Heading" id="reagent_contract_title">
+     <div label="ฺBack" data-dojo-type="dojox/mobile/ToolBarButton" id="reagent_contract_back" arrow="left"></div>
+   </h1>
+   <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_14" jsId="ItemFileReadStore_14" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+   <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="reagent_contract_list" store="ItemFileReadStore_14" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+   <button data-dojo-type="dojox/mobile/Button" id="reagent_contract_add" style="width: 100%;">
+     Add reagent</button>
+ </div>
  <div data-dojo-type="dojox/mobile/View" id="view4" style="height: 100%;">
   <h1 label="เลือกรายการน้ำยา" data-dojo-type="dojox/mobile/Heading" id="view4_title">
    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_view4" arrow="left"></div>
@@ -139,7 +160,7 @@ require([
      </h1>
    <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_4" jsId="ItemFileReadStore_4" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
    <h1 label="เพิ่มสัญญา" data-dojo-type="dojox/mobile/Heading" id="view2_add" style="font-size: 14px; background-color: white;"></h1>
-   <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view2_list" style="border: none; height: 194.19445037841797px; width: 100%; background-color: transparent;" store="ItemFileReadStore_4" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
+   <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view2_list" style="border: none; width: 100%; background-color: transparent; overflow: scroll; height: 268.1875px;" store="ItemFileReadStore_4" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
    <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_5" jsId="ItemFileReadStore_5" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
 <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="view2_choose" style="background-color: white;" store="ItemFileReadStore_5" query="{&quot;label&quot;:&quot;*&quot;}" select="single"></ul>
 </div>
@@ -192,3 +213,4 @@ require([
  </div>
 </body>
 </html>
+

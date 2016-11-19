@@ -53,25 +53,10 @@ include 'mbase.php';
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
 
-$b = $_GET['hosp_id'];
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-//$strSQL="SELECT c.contract_no AS label, c.*   
-//FROM contract_hosp ch, contract_detail cd, reagent_detail r, contract c 
-//where ch.hosp_id='".$b."' and c.is_cancel=0 AND ch.contract_id=cd.contract_id 
-//AND cd.reagent_id=r.reagent_id AND cd.contract_id=c.contract_id
-//ORDER BY c.contract_id ";
-
-$strSQL="SELECT concat(c.contract_no,': ',comment) AS label,c.* , ch.* 
-FROM contract_hosp ch, contract c 
-WHERE ch.hosp_id='".$b."' and ch.contract_id=c.contract_id
-AND c.is_cancel=0 AND ch.is_cancel=0 ORDER BY c.contract_no";
-//$strSQL="SELECT concat('สัญญา ',c.comment,'เลขที่ ',c.contract_no) AS label,concat('มูลค่า: ',sum(p.purchase_cost),' บาท') AS rightText,
-//p.*,sum(purchase_cost) AS purchase_costs   
-//FROM purchase_detail p, contract_detail cd, reagent_detail r, contract c 
-//where p.hosp_id='".$b."' and p.is_cancel=0 AND p.contract_id=cd.contract_id 
-//AND cd.reagent_id=r.reagent_id AND cd.contract_id=c.contract_id
-//group by p.contract_id ORDER BY p.contract_id ";
+$strSQL="SELECT reagent_name AS label, '>' AS rightText, reagent_id
+FROM reagent_detail WHERE is_cancel=0 ORDER BY reagent_id";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 

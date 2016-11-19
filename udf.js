@@ -488,6 +488,46 @@ function selected_row(clist, nrec) {
 	else {return return_obj[nsel];}
 }
 
+//// Select List Item จาก List0 และแสดงผลรายการที่เลือกใน List1 โดยมี Label, rightText และ PK ตามที่ระบุ
+function list2list(clist0, clist1, clabel, crightText, ckey) {
+	var s = 0;
+	var n = 0;
+	var obj0 = [];
+	var val1 = "";
+	var val2 = "";
+	var val3 = "";
+	require([
+ 	"dojo/ready",
+	"dojo/data/ItemFileWriteStore",
+ 	"dijit/registry"
+ 	// ชื่อ Function ที่จะนำไปใช้ มาจาก Require เรียงตามลำดับ ตั้งชื่อใหม่ได้
+	 ], function(ready, ifws, reg){
+		ready(function(){
+			var list0 = reg.byId(clist0);
+			obj0 = list0.getChildren();
+			var list1 = reg.byId(clist1);
+			var store1 = new ifws({data:{items:[]}});
+			list1.store = null;
+			list1.setStore(store1);
+
+		    	for (s=0; s<obj0.length; s++){
+				if (obj0[s].checked == true) {
+					// ข้อมูลเดิมใน List0
+					var cmacro1 = "val1 = obj0[s]." + clabel;
+					eval(cmacro1);
+					var cmacro2 = "val2 = obj0[s]." + crightText;
+					eval(cmacro2);
+					var cmacro3 = "val3 = obj0[s]." + ckey;
+					eval(cmacro3);
+					// เพิ่มข้อมูลใน List1
+					cmacro4 = "var list_add = list1.store.newItem({" + clabel + ": '" + val1 + "', " + crightText + ": '" + val2 + "', " + ckey + ": '" + val3 + "'})";
+					eval(cmacro4);
+				}
+		   	}
+		});
+	});
+}
+
 //// Select List Item Parameter1 List Object คืนค่า Obj ที่มี Field ตาม Record ที่เลือก, Parameter2 = 1 แสดงเฉพาะ record number ที่เลือก เริ่มต้นจาก 0
 function row_mark(clist, nrec) {
 	var s = 0;
@@ -942,7 +982,8 @@ function back(cbtn, cfrom, cto, cclear) {
 	});
 }
 ////////////////////////////////////////////////////////
-//// Function สร้าง Dialog รับค่า Parameters ccaption=หัวช้อ, ccode=คำสั่งที่ต้องการให้ run เมื่อกดปุ่ม OK, cvar1=ตัวแปร 1, ctype1=ประเภทตัวแปร C/N/D/T, clabel1=label ของตัวแปร 1
+//// Function สร้าง Dialog รับค่า Parameters ccaption=หัวช้อ, ccode=คำสั่งที่ต้องการให้ run เมื่อกดปุ่ม OK กรณีต้องการให้เป็น alert ให้กำหนด ccode = "alert" แล้วตามด้วย code ที่ต้องการให้ run เมื่อกดปุ่ม OK
+//// cvar1=ตัวแปร 1, ctype1=ประเภทตัวแปร C/N/D/T, clabel1=label ของตัวแปร 1... กำหนดจนถึง cvar8
 ////////////////////////////////////////////////////////
 function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2, cvar3, ctype3, clabel3, cvar4, ctype4, clabel4, 
 				cvar5, ctype5, clabel5, cvar6, ctype6, clabel6, cvar7, ctype7, clabel7, cvar8, ctype8, clabel8) {
@@ -970,7 +1011,13 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 		    var contentPane = dojo.create("div", {
 		        class: "dijitDialogPaneContentArea", width: "100%", height: "auto"
 			    }, myDialog.containerNode);
-		    
+		    var lalert = false;
+			var calert = ccode.substr(0, 5);
+			if (calert.toUpperCase() == "ALERT") {
+				lalert = true;
+				cvar1 = "x";
+				ctype1 = "c";
+			}
 			// Variable 1 //////////////////////////////////////////////////////////////
 			if (cvar1 != "" && cvar1 != undefined) {
 				if (ctype1.trim().toUpperCase() == "D") {
@@ -978,16 +1025,17 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 				} else if (ctype1.trim().toUpperCase() == "T") {
 					var box1 = new TimeTextBox({placeHolder: clabel1}).placeAt(contentPane);
 				} else {
-					var calert = ccode.substr(0, 5);
-					if(calert.toUpperCase()=="ALERT") {
+					
+					if(lalert == true) {
 						ccode = ccode.substr(5);
+						lalert = true;
 						var box1 = new Textarea({placeHolder: clabel1}).placeAt(contentPane);
 						box1.domNode.style.border = "none";
 						box1.domNode.style.fontSize = "20px";
 						box1.set("displayedValue", clabel1);
 						box1.set("disabled", true);
 						box1.textbox.style.color = "Blue";
-						box1.textbox.style.textAlign="center";
+						//box1.textbox.style.textAlign="center";
 					} else {
 						var box1 = new TextBox({placeHolder: clabel1}).placeAt(contentPane);
 					}
@@ -1092,8 +1140,6 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 			btn_cancel.containerNode.style.width = "100px";
 			btn_cancel.domNode.style.float = "right";
 
-			//alert("OK");
-			//debugger;
 			
 			myDialog.autofocus = false;
 			btn_ok.focus(true);
@@ -1101,7 +1147,7 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 	
 		    on(btn_ok, "click", function() {
 				// var1
-				if (cvar1 != "" && cvar1!= undefined) {
+				if (cvar1 != "" && cvar1!= undefined && lalert == false) {
 					if (ctype1.trim().toUpperCase() == "D") {
 						var ddate0 = new Date(box1.get("value"));
 						var cdate = "'" + ddate0.getFullYear().toString() + "-" + (ddate0.getMonth()+1).toString() + "-" + ddate0.getDate().toString() + "'"
@@ -1220,7 +1266,6 @@ function dialog(ccaption, ccode, cvar1, ctype1, clabel1, cvar2, ctype2, clabel2,
 					}
 					eval(cmacro);
 				}
-
 				eval(ccode);
 		    	myDialog.hide();
 		    });

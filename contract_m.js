@@ -21,7 +21,7 @@ var lchosp = "";
 var lnuser_id = 0;
 var ip_address = '';
 var lccontract_id = '';
-var reagent_id = '';
+var reagent_id = 0;
 var lmonth = "";
 
 var getlogin = false;
@@ -154,10 +154,11 @@ require([
 				lchosp = uobj.hosp_id;
 				var lcname = uobj.fname;
 				getlogin = true;
-				list("view2_list", "sum_buy.php?hosp_id=" + lchosp, "สัญญาทั้งหมด");
+				list("view2_list", "show_contract.php?hosp_id=" + lchosp, "สัญญาทั้งหมด");
 				list("view3_list", "contract_lists.php?hosp_id=" + lchosp, "เลือกสัญญาที่ต้องการบันทึกข้อมูล");
 				list("view_user_list", "user_list.php");
 				list("add_user_list", "hosp_list.php", "เลือกชื่อโรงพยาบาล");
+				list("add_reagent_list","show_reagent.php");
 				view1.performTransition("view_menu", 1, "slide");
 			}
 		});
@@ -296,7 +297,7 @@ require([
 			back("view2_back", "view2", "view_menu");
 		});
 		on(view2_add, "click", function () {
-			dialog("เพิ่มสัญญา", 'var csave="add_contract.php?contract_no="+lcontract_no+"&comment="+lcomment+"&sign_date="+lsign+"&start_date="+lstart+"&stop_date="+lstop+"&hosp_id="+lchosp;mysave(csave)', "lcontract_no", "C", "เลขที่สัญญา", "lcomment", "C", "รายละเอียดสัญญา", "lsign", "D", "วันเซ็นสัญญา", "lstart", "D", "วันเริ่มสัญญา", "lstop", "D", "วันสิ้นสุดสัญญา");
+			dialog("เพิ่มสัญญา", 'var csave="add_contract.php?contract_no="+lcontract_no+"&comment="+lcomment+"&sign_date="+lsign+"&start_date="+lstart+"&stop_date="+lstop+"&hosp_id="+lchosp;mysave(csave);list("view2_list", "sum_buy.php?hosp_id=" + lchosp, "สัญญาทั้งหมด")', "lcontract_no", "C", "เลขที่สัญญา", "lcomment", "C", "รายละเอียดสัญญา", "lsign", "D", "วันเซ็นสัญญา", "lstart", "D", "วันเริ่มสัญญา", "lstop", "D", "วันสิ้นสุดสัญญา");
 		});
 
 
@@ -327,8 +328,86 @@ require([
 		on(view_contract_title, "click", function () {
 			back("back_view_contract", "view_contract", "view2");
 		});
+		//คลิก
+		on(view_contract_list, "click", function () {
+			var vobj = selected_row('view_contract_list');
+			lrow = vobj.value;
+			if (lrow == '005' || lrow=='006') {
+				//view_contract.performTransition("add_reagent", 1, "slide");
+				list("reagent_contract_list","reagent_contract.php?contract_id="+lccontract_id);
+				view_contract.performTransition("reagent_contract",1,"slide");
+			}
+		});
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////
+		//// add_reagent   /////////////////
+		///////////////////////////////
+		//////////////////
+		//// Register ////
+		//////////////////
+		var add_reagent = reg.byId("add_reagent");
+		var add_reagent_title = reg.byId("add_reagent_title");
+		var add_reagent_back = reg.byId("add_reagent_back");
+		var add_reagent_list = reg.byId("add_reagent_list");
+		var add_reagent_list2 = reg.byId("add_reagent_list2");
+		var add_reagent_save = reg.byId("add_reagent_save");
+		//////////////////
+		//// Function ////
+		//////////////////
 
+		//////////////////
+		//// Variables ///
+		//////////////////
 
+		//////////////////
+		//// Events //////
+		//////////////////
+		on(add_reagent_title, "click", function(){
+			back("add_reagent_back","reagent_contract","view_contract")
+		});
+		/// กดปุ่ม SAVE บันทึกรายการน้ำยา
+		on(add_reagent_save,"click",function(){
+			list2list("add_reagent_list","add_reagent_list2","label","rightText","reagent_id");
+			
+		});
+		on(add_reagent_list2, "click", function(){
+			var csel = selected_row("add_reagent_list2");
+			reagent_id = csel.reagent_id;
+			dialog('ใส่ข้อมูลจัดซื้อตามสัญญา', 'var csave = "add_contract_detail.php?contract_id=" + lccontract_id + "&reagent_id=" + reagent_id + "&vol=" + vol+ "&cost=" + cost + "&user_id=" + lnuser_id ;mysave(csave)', "vol", "N", "จำนวน Test", "cost", "N","มูลค่า (บาท)");
+		});
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////
+		//// reagent_contract   /////////////////
+		///////////////////////////////
+		//////////////////
+		//// Register ////
+		//////////////////
+		var reagent_contract = reg.byId("reagent_contract");
+		var reagent_contract_back = reg.byId("reagent_contract_back");
+		var reagent_contract_title = reg.byId("reagent_contract_title");
+		var reagent_contract_list = reg.byId("reagent_contract_list");
+		var reagent_contract_add = reg.byId("reagent_contract_add");
+
+		//////////////////
+		//// Function ////
+		//////////////////
+
+		//////////////////
+		//// Variables ///
+		//////////////////
+
+		//////////////////
+		//// Events //////
+		//////////////////
+		on(reagent_contract_title, "click", function(){
+			back("reagent_contract_back","reagent_contract","view_contract")
+		});
+		//คลิก เพิ่มรายการน้ำยาในสัญญา
+		on(reagent_contract_add, "click", function () {
+			reagent_contract.performTransition("add_reagent",1,"slide");
+		});
 		///////////////////////////////
 		//// View 3   /////////////////
 		///////////////////////////////
@@ -389,7 +468,7 @@ require([
 			var cobj = selected_row('view4_list');
 			lccontract_id = cobj.contract_id;
 			reagent_id = cobj.reagent_id;
-			dialog('ใส่ข้อมูลจัดซื้อ', 'var csave = "add_purchase_detail.php?contract_id=" + lccontract_id + "&reagent_id=" + reagent_id + "&vol=" + vol+ "&cost=" + cost + "&lmonth=" + lmonth + "&user_id=" + lnuser_id + "&hosp_id=" + lchosp;alert(csave);mysave(csave)', "vol", "N", "จำนวน Test", "cost", "N", "ราคา");
+			dialog('ใส่ข้อมูลจัดซื้อ', 'var csave = "add_purchase_detail.php?contract_id=" + lccontract_id + "&reagent_id=" + reagent_id + "&vol=" + vol+ "&cost=" + cost + "&lmonth=" + lmonth + "&user_id=" + lnuser_id + "&hosp_id=" + lchosp;mysave(csave)', "vol", "N", "จำนวน Test", "cost", "N", "ราคา");
 		});
 		on(view4_title, "click", function () {
 			back("back_view4", "view4", "view3");
@@ -458,13 +537,13 @@ require([
 		//// Events //////
 		//////////////////
 		on(add_user_title, "click", function () {
+			list("view_user_list", "user_list.php");
 			back("add_user_back", "add_user", "view_user");
 		});
 
 		on(add_user_list, "click", function () {
 			var uobj = selected_row('add_user_list');
 			lchospn = uobj.hosp_id;
-			console.log(lchospn);
 			dialog('เพิ่มผู้ใช้', 'var csave="add_user.php?fname="+lfname+"&lname="+llname+"&user_name="+lusername+"&password="+lpassw+"&level_id="+llevel+"&hosp_id="+lchospn;mysave(csave)', 'lfname', 'C', 'ชื่อ', 'llname', 'C', 'นามสกุล', 'lusername', 'C', 'User name', 'lpassw', 'C', 'รหัสผ่าน', 'llevel', 'N', 'ระดับ');
 		});
 

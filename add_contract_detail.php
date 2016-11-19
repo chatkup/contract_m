@@ -52,28 +52,20 @@ include 'mbase.php';
 //$a = $_GET['user_id'];
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
-$a = $_GET['hosp_id'];
-$b=$_GET['contract_id'];
+$contract_id = $_GET['contract_id'];
+$reagent_id=$_GET['reagent_id'];
+$vol=$_GET['vol'];
+$cost=$_GET['cost'];
+$user_id=$_GET['user_id'];
 
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="SELECT c.*,cd.*, ch.hosp_id AS label, concat('เลขที่ ',c.contract_no) AS rightText, 
-sum(cd.contract_vol) AS sum_vol, sum(cd.contract_cost) AS sum_cost  
-FROM contract c, contract_hosp ch, contract_detail cd
-WHERE c.contract_id=ch.contract_id AND ch.hosp_id='".$a."' AND c.contract_id='".$b."'
-AND c.contract_id=cd.contract_id AND c.is_cancel=0 AND cd.is_cancel=0 AND cd.is_cancel=0 GROUP BY cd.contract_id";
+//$strSQL="INSERT into purchase_detail (contract_id,reagent_id,purchase_vol,purchase_cost,purchase_date,user_id,hosp_id)
+//VALUES('".$contract_id."','".$reagent_id."','".$vol."','".$cost."','".$lmonth."','".$user_id."','".$hosp_id."')";
+$strSQL="INSERT into contract_detail (contract_id, reagent_id, contract_vol, contract_cost,user_id,is_cancel,contract_unit)
+VALUES ('".$contract_id."','".$reagent_id."','".$vol."','".$cost."','".$user_id."',0,'test')";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-$num_row=mysql_num_rows($objQuery);
-
-if ($num_row==0){
-	$strSQL="SELECT c.*, ch.hosp_id AS label, concat('เลขที่ ',c.contract_no) AS rightText, 
-	0 AS sum_vol, 0 AS sum_cost  
-	FROM contract c, contract_hosp ch
-	WHERE c.contract_id=ch.contract_id AND ch.hosp_id='".$a."' AND c.contract_id='".$b."'
-	AND c.is_cancel=0 AND ch.is_cancel=0";
-	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ได้ผล Query แล้วนำมาสร้างเป็น Text รูปแบบ JSON Object เพื่อนำไปใช้ต่อโดย Javascript
