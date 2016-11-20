@@ -52,7 +52,7 @@ require([
  <div data-dojo-type="dojox/mobile/View" id="view1" style="height: 100%;" selected="true">
    <h1 label="หน้าจอหลัก" data-dojo-type="dojox/mobile/Heading" id="view1_title" title="หน้าจอหลัก" style="font-size: 14px;">
    </h1>
-   <div dvwidget="html.richtext" style="position: relative;" class="richText">
+   <div dvwidget="html.richtext" style="position: relative; background-color: transparent;" class="richText">
      <div style="text-align: center;"></div>
      <div>
        <div style="text-align: center;"></div>
@@ -136,7 +136,7 @@ require([
 <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_13" jsId="ItemFileReadStore_13" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;moveTo&quot;:&quot;dummy&quot;}]}"></span>
 <button data-dojo-type="dojox/mobile/Button" id="add_reagent_save" style="width: 100%;">
 SAVE</button>
-<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_reagent_list2" store="ItemFileReadStore_13" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_reagent_list2" store="ItemFileReadStore_13" query="{&quot;label&quot;:&quot;*&quot;}" style="height: 110px; overflow: scroll;"></ul>
 </div>
  <div data-dojo-type="dojox/mobile/View" id="reagent_contract" style="height: 100%;">
    <h1 label="น้ำยาในสัญญา" data-dojo-type="dojox/mobile/Heading" id="reagent_contract_title">
@@ -147,6 +147,27 @@ SAVE</button>
    <button data-dojo-type="dojox/mobile/Button" id="reagent_contract_add" style="width: 100%;">
      Add reagent</button>
  </div>
+ <div data-dojo-type="dojox/mobile/View" id="hosp_contract" style="height: 100%;">
+  <h1 label="รพ.ในสัญญา" data-dojo-type="dojox/mobile/Heading" id="hosp_contract_title">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="hosp_contract_back" arrow="left"></div>
+  </h1>
+  <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_15" jsId="ItemFileReadStore_15" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="hosp_contract_list" store="ItemFileReadStore_15" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+<button data-dojo-type="dojox/mobile/Button" id="hosp_contract_add" style="width: 100%;">
+  
+  เพิ่มโรงพยาบาลในสัญญา</button>
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="add_hosp_contract" style="height: 100%;">
+  <h1 label="เพิ่ม รพ.ในสัญญา" data-dojo-type="dojox/mobile/Heading" id="add_hosp_contract_title">
+    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="add_hosp_contract_back"></div>
+  </h1>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_16" jsId="ItemFileReadStore_16" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;Label 1&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;},{&quot;label&quot;:&quot;Label 2&quot;,&quot;moveTo&quot;:&quot;transitionToPage&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_hosp_contract_list" style="height: 203px; overflow: scroll;" store="ItemFileReadStore_16" query="{&quot;label&quot;:&quot;*&quot;}" select="multiple"></ul>
+<button data-dojo-type="dojox/mobile/Button" id="add_hosp_contract_save" style="width: 100%;">
+  SAVE</button>
+<span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_18" jsId="ItemFileReadStore_18" data="{&quot;items&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;moveTo&quot;:&quot;dummy&quot;}]}"></span>
+<ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="add_hosp_contract_list2" store="ItemFileReadStore_18" query="{&quot;label&quot;:&quot;*&quot;}" style="height: 142px; overflow: scroll;"></ul>
+</div>
  <div data-dojo-type="dojox/mobile/View" id="view4" style="height: 100%;">
   <h1 label="เลือกรายการน้ำยา" data-dojo-type="dojox/mobile/Heading" id="view4_title">
    <div label="Back" data-dojo-type="dojox/mobile/ToolBarButton" id="back_view4" arrow="left"></div>
