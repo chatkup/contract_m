@@ -55,7 +55,7 @@ include 'mbase.php';
 $contract_id=$_GET['contract_id'];
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="SELECT h.hosp_name AS label, '>' AS rightText, ch.hosp_id
+$strSQL="SELECT h.hosp_name AS label, '>' AS rightText, ch.hosp_id, '../contract_m/pic/add.jpg' AS rightIcon2
 FROM hospitals h, contract_hosp ch 
 WHERE ch.contract_id='".$contract_id."' AND ch.is_cancel=0 
 AND ch.hosp_id=h.hosp_id ORDER BY ch.hosp_id";

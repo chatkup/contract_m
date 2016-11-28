@@ -17,19 +17,26 @@ var gcfunction = "";
 var lccontract = 0;
 var lcuser = "";
 var lcpassw = "";
+var lnlevel = 0;
 var lchosp = "";
 var lnuser_id = 0;
 var ip_address = '';
 var lccontract_id = '';
 var reagent_id = 0;
 var lmonth = "";
-
+// ตัวแปรตอน login 
 var getlogin = false;
 var lfname = '';
 var llname = '';
 var lusername = '';
 var lpassw = '';
 var llevel = '';
+// ตัวแปรตอนเพิ่ม user
+var lcfname = "";
+var lclname = "";
+var lcusername = "";
+var lcpassword = "";
+var lclevel = "";
 var lchospn = '';
 
 
@@ -124,7 +131,32 @@ require([
 		//////////////////
 		//// Function ////
 		//////////////////
+		function dialog_alert(header_text, alert_text) {
+			require(["dijit/Dialog", "dojo/domReady!", "dijit/form/Button"], function (Dialog, Ready, Button) {
+				//var header=header_text;
+				//var a_text=alert_text;
+				myDialog = new Dialog({
+					title: header_text,
+					content: alert_text,
+					style: "width: 300px"
+				})
+				var actionBar = dojo.create("div", {
+					class: "dijitDialogPaneContentArea", width: "90%"
+				}, myDialog.domNode);
+				// สร้างปุ่ม OK, Cancel
+				var btn_ok = new Button({ label: "OK" }).placeAt(actionBar);
+				btn_ok.containerNode.style.width = "100px";
 
+				//myDialog.autofocus = false;
+				btn_ok.focus(true);
+				myDialog.show();
+
+				on(btn_ok, "click", function () {
+					myDialog.hide();
+				});
+			}
+			)
+		};
 		//////////////////
 		//// Variables ///
 		//////////////////
@@ -137,31 +169,34 @@ require([
 			lcuser = view1_user.get("value");
 			lcpassw = view1_passw.get("value");
 
-			// test encrypt
+			// เอา user_name ไปเช็คว่ามีในฐานข้อมูลหรือไม่ ถ้ามีเอา password มาถอดรหัสเทียบกับที่ผู้ใช้ใส่เข้ามา
+			uobj = php2obj("login.php?lcuser=" + lcuser);
+			lnuser_id = uobj.user_id;
+			lcuser=uobj.label;
 
-			//var encrypted = CryptoJS.AES.encrypt(lcpassw, "12345678");
-			//var aaaa = CryptoJS.AES.encrypt(lcpassw, "12345677");
-			//var decrypted = CryptoJS.AES.decrypt(encrypted, "12345678");
-			//alert(encrypted);
-			//alert(decrypted);
-			///
-
-			uobj = php2obj("login.php?lcuser=" + lcuser + "&lcpassw=" + lcpassw);
-			if (uobj == undefined) {
-				alert('Username หรือ Password ไม่ถูกต้อง');
-			} else {
-				lnuser_id = uobj.user_id;
-				lchosp = uobj.hosp_id;
-				var lcname = uobj.fname;
-				getlogin = true;
-				list("view2_list", "show_contract.php?hosp_id=" + lchosp, "สัญญาทั้งหมด");
-				list("view3_list", "contract_lists.php?hosp_id=" + lchosp, "เลือกสัญญาที่ต้องการบันทึกข้อมูล");
-				list("view_user_list", "user_list.php");
-				list("add_user_list", "hosp_list.php", "เลือกชื่อโรงพยาบาล");
-				list("add_reagent_list", "show_reagent.php");
-				list("hosp_contract_list", "show_hosp_contract.php");
-				list("add_hosp_contract_list", "hosp_list.php");
-				view1.performTransition("view_menu", 1, "slide");
+			if (lnuser_id == undefined) {		// ไม่มี user
+				dialog_alert('คำเตือน', 'Username ไม่ถูกต้อง');
+			} else {							// มี user ก็ตรวจสอบรหัสผ่าน
+				var p = uobj.password;
+				var decrypted = CryptoJS.AES.decrypt(p, "MbaseMaqetta by leklek");
+				var dtxt = decrypted.toString(CryptoJS.enc.Utf8);
+				if (dtxt == lcpassw) {			// รหัสผ่านถูกต้อง
+					lchosp = uobj.hosp_id;
+					var lcname = uobj.fname;
+					lnlevel = uobj.level_id;
+					getlogin = true;
+					create_view_menu(lnlevel);
+					list("view2_list", "show_contract.php?hosp_id=" + lchosp, "สัญญาทั้งหมด");
+					list("view3_list", "contract_lists.php?hosp_id=" + lchosp, "เลือกสัญญาที่ต้องการบันทึกข้อมูล");
+					list("view_user_list", "user_list.php");
+					list("add_user_list", "hosp_list.php", "เลือกชื่อโรงพยาบาล");
+					list("add_reagent_list", "show_reagent.php");
+					list("hosp_contract_list", "show_hosp_contract.php?contract_id=" + lccontract_id);
+					list("add_hosp_contract_list", "hosp_list.php");
+					view1.performTransition("view_menu", 1, "slide");
+				} else {
+					dialog_alert('คำเตือน', 'Password ไม่ถูกต้อง');
+				}
 			}
 		});
 
@@ -178,21 +213,45 @@ require([
 		var view_menu_right = reg.byId("view_menu_right");
 		var view_menu_logout = reg.byId("view_menu_logout");
 
-		var new_store = new ifws({ data: { items: [] } });
-		view_menu_list.setStore(new_store);
-		var menu = view_menu_list.store.newItem({ label: "เลือกการทำงาน", header: true });
-		var menu = view_menu_list.store.newItem({ label: "ดูรายละเอียดสัญญา", value: "001", rightText: ">", icon: "../contract_m/pic/search.jpg" });
-		var menu = view_menu_list.store.newItem({ label: "ลงข้อมูลจัดซื้อ", value: "002", rightText: ">", icon: "../contract_m/pic/dollar.jpg" });
 
-		var new_store = new ifws({ data: { items: [] } });
-		view_menu_list2.setStore(new_store);
-		var menu2 = view_menu_list2.store.newItem({ label: "สำหรับผู้ดูแลระบบ", header: true });
-		var menu2 = view_menu_list2.store.newItem({ label: "เพิ่มผู้ใช้งาน", value: "101", icon: "../contract_m/pic/person.jpg" });
-		var menu2 = view_menu_list2.store.newItem({ label: "เพิ่มสัญญา", value: "102", icon: "../contract_m/pic/add.jpg" });
 		//////////////////
 		//// Function ////
 		//////////////////
+		function create_view_menu(lnlevel) {
+			if (lnlevel == 1) {			//level 1 =Admin
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list.setStore(new_store);
+				var menu = view_menu_list.store.newItem({ label: lcuser, header: true });
+				var menu = view_menu_list.store.newItem({ label: "ดูรายละเอียดสัญญา", value: "001", rightText: ">", icon: "../contract_m/pic/search.jpg" });
+				var menu = view_menu_list.store.newItem({ label: "ลงข้อมูลจัดซื้อ", value: "002", rightText: ">", icon: "../contract_m/pic/dollar.jpg" });
 
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list2.setStore(new_store);
+				var menu2 = view_menu_list2.store.newItem({ label: "สำหรับผู้ดูแลระบบ", header: true });
+				var menu2 = view_menu_list2.store.newItem({ label: "เพิ่มผู้ใช้งาน", value: "101", icon: "../contract_m/pic/person.jpg" });
+				var menu2 = view_menu_list2.store.newItem({ label: "เพิ่มสัญญา", value: "102", icon: "../contract_m/pic/add.jpg" });
+			} else if (lnlevel == 2) {		//level2 = user
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list.setStore(new_store);
+				var menu = view_menu_list.store.newItem({ label: lcuser, header: true });
+				var menu = view_menu_list.store.newItem({ label: "ดูรายละเอียดสัญญา", value: "001", rightText: ">", icon: "../contract_m/pic/search.jpg" });
+				var menu = view_menu_list.store.newItem({ label: "ลงข้อมูลจัดซื้อ", value: "002", rightText: ">", icon: "../contract_m/pic/dollar.jpg" });
+
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list2.setStore(new_store);
+				var menu2 = view_menu_list2.store.newItem({ label: "", header: true });
+			} else {				// ที่เหลือคือ level3-super user *** ยังไม่กำหนดหน้าที่
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list.setStore(new_store);
+				var menu = view_menu_list.store.newItem({ label: lcuser, header: true });
+				var menu = view_menu_list.store.newItem({ label: "ดูรายละเอียดสัญญา", value: "001", rightText: ">", icon: "../contract_m/pic/search.jpg" });
+				var menu = view_menu_list.store.newItem({ label: "ลงข้อมูลจัดซื้อ", value: "002", rightText: ">", icon: "../contract_m/pic/dollar.jpg" });
+
+				var new_store = new ifws({ data: { items: [] } });
+				view_menu_list2.setStore(new_store);
+				var menu2 = view_menu_list2.store.newItem({ label: "", header: true });
+			}
+		};
 		//////////////////
 		//// Variables ///
 		//////////////////
@@ -218,9 +277,9 @@ require([
 			}
 		});
 
-		on(view_menu_title,"click",function(){
-			getlogin=false;
-			back("view_menu_logout","view_menu","view1");
+		on(view_menu_title, "click", function () {
+			getlogin = false;
+			back("view_menu_logout", "view_menu", "view1");
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +307,25 @@ require([
 		//////////////////
 		//// Function ////
 		//////////////////
-
+		function create_view_contract(c_no, c_comment, c_start, c_stop, n_vol, n_cost) {
+			//cd2obj = php2obj("contract_detail_lists.php?hosp_id=" + lchosp + "&contract_id=" + lccontract_id);
+			//var c_no = "";
+			//c_no = cd2obj.contract_no;
+			//c_comment = cd2obj.comment;
+			//c_start = tsdate(cd2obj.start_date);
+			//c_stop = tsdate(cd2obj.stop_date);
+			//n_vol = cd2obj.sum_vol;
+			//n_cost = cd2obj.sum_cost;
+			var new_store = new ifws({ data: { items: [] } });
+			view_contract_list.setStore(new_store);
+			var List_add = view_contract_list.store.newItem({ label: "", header: true });
+			var List_add = view_contract_list.store.newItem({ label: "รายละเอียด", value: "004", rightText: c_comment });
+			var List_add = view_contract_list.store.newItem({ label: "เลขที่สัญญา", value: "001", rightText: c_no });
+			var List_add = view_contract_list.store.newItem({ label: "วันเริ่มต้น", value: "002", rightText: c_start });
+			var List_add = view_contract_list.store.newItem({ label: "วันสิ้นสุด", value: "003", rightText: c_stop });
+			var List_add = view_contract_list.store.newItem({ label: "จำนวน", value: "005", rightText: n_vol + ' Test' });
+			var List_add = view_contract_list.store.newItem({ label: "มูลค่า", value: "006", rightText: n_cost + ' บาท' });
+		};
 		//////////////////
 		//// Variables ///
 		//////////////////
@@ -256,9 +333,6 @@ require([
 		//////////////////
 		//// Events //////
 		//////////////////
-		on(view2_title, "click", function () {
-			back("back_view2", "view2", "view1");
-		});
 		on(view2_choose, "click", function () {
 			var chooseobj = selected_row('view2_choose');
 			lchoose = chooseobj.value;
@@ -283,26 +357,21 @@ require([
 			c_stop = tsdate(cd2obj.stop_date);
 			n_vol = cd2obj.sum_vol;
 			n_cost = cd2obj.sum_cost;
-			var new_store = new ifws({ data: { items: [] } });
-			view_contract_list.setStore(new_store);
-			var List_add = view_contract_list.store.newItem({ label: "รายละเอียดสัญญา", header: true });
-			var List_add = view_contract_list.store.newItem({ label: "รายละเอียด", value: "004", rightText: c_comment });
-			var List_add = view_contract_list.store.newItem({ label: "เลขที่สัญญา", value: "001", rightText: c_no });
-			var List_add = view_contract_list.store.newItem({ label: "วันเริ่มต้น", value: "002", rightText: c_start });
-			var List_add = view_contract_list.store.newItem({ label: "วันสิ้นสุด", value: "003", rightText: c_stop });
-			var List_add = view_contract_list.store.newItem({ label: "จำนวน", value: "005", rightText: n_vol + ' Test' });
-			var List_add = view_contract_list.store.newItem({ label: "มูลค่า", value: "006", rightText: n_cost + ' บาท' });
+			create_view_contract(c_no, c_comment, c_start, c_stop, n_vol, n_cost);
 			///แสดงยอดสั่งซื้อใน view_contract_list2
 			list("view_contract_list2", "sum_by_reagent.php?hosp_id=" + lchosp + "&contract_id=" + lccontract_id, "มูลค่าซื้อแล้ว");
 			view2.performTransition("view_contract", 1, "slide");
 		});
-		on(view2_title, "click", function () {
-			back("view2_back", "view2", "view_menu");
-		});
-		on(view2_add, "click", function () {
-			dialog("เพิ่มสัญญา", 'var csave="add_contract.php?contract_no="+lcontract_no+"&comment="+lcomment+"&sign_date="+lsign+"&start_date="+lstart+"&stop_date="+lstop+"&hosp_id="+lchosp;mysave(csave);list("view2_list", "show_contract.php?hosp_id=" + lchosp, "สัญญาทั้งหมด")', "lcontract_no", "C", "เลขที่สัญญา", "lcomment", "C", "รายละเอียดสัญญา", "lsign", "D", "วันเซ็นสัญญา", "lstart", "D", "วันเริ่มสัญญา", "lstop", "D", "วันสิ้นสุดสัญญา");
-		});
 
+		on(view2_title, "click", function () {
+			if (view2_back.focused == true) {
+				back("view2_back", "view2", "view_menu");
+			} else if (view2_add.focused == true) {
+				dialog("เพิ่มสัญญา", 'var csave="add_contract.php?contract_no="+lcontract_no+"&comment="+lcomment+"&sign_date="+lsign+"&start_date="+lstart+"&stop_date="+lstop+"&hosp_id="+lchosp;mysave(csave);list("view2_list", "show_contract.php?hosp_id=" + lchosp)', "lcontract_no", "C", "เลขที่สัญญา", "lcomment", "C", "รายละเอียดสัญญา", "lsign", "D", "วันเซ็นสัญญา", "lstart", "D", "วันเริ่มสัญญา", "lstop", "D", "วันสิ้นสุดสัญญา");
+
+			}
+		}
+		);
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////
@@ -376,7 +445,7 @@ require([
 		//// Events //////
 		//////////////////
 		on(add_reagent_title, "click", function () {
-			back("add_reagent_back", "reagent_contract", "view_contract")
+			back("add_reagent_back", "add_reagent", "reagent_contract")
 		});
 		/// กดปุ่ม SAVE บันทึกรายการน้ำยา
 		on(add_reagent_save, "click", function () {
@@ -386,7 +455,7 @@ require([
 		on(add_reagent_list2, "click", function () {
 			var csel = selected_row("add_reagent_list2");
 			reagent_id = csel.reagent_id;
-			dialog('ใส่ข้อมูลจัดซื้อตามสัญญา', 'var csave = "add_contract_detail.php?contract_id=" + lccontract_id + "&reagent_id=" + reagent_id + "&vol=" + vol+ "&cost=" + cost + "&user_id=" + lnuser_id ;mysave(csave)', "vol", "N", "จำนวน Test", "cost", "N", "มูลค่า (บาท)");
+			dialog('ใส่ข้อมูลจัดซื้อตามสัญญา', 'var csave = "add_contract_detail.php?contract_id=" + lccontract_id + "&reagent_id=" + reagent_id + "&vol=" + vol+ "&cost=" + cost + "&user_id=" + lnuser_id ;mysave(csave);list("reagent_contract_list", "reagent_contract.php?contract_id=" + lccontract_id)', "vol", "N", "จำนวน Test", "cost", "N", "มูลค่า (บาท)");
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,11 +483,11 @@ require([
 		//// Events //////
 		//////////////////
 		on(reagent_contract_title, "click", function () {
-			back("reagent_contract_back", "reagent_contract", "view_contract")
-		});
-		//คลิก เพิ่มรายการน้ำยาในสัญญา
-		on(reagent_contract_add, "click", function () {
-			reagent_contract.performTransition("add_reagent", 1, "slide");
+			if (reagent_contract_back.focused == true) {
+				back("reagent_contract_back", "reagent_contract", "view_contract")
+			} else if (reagent_contract_add.focused == true) {
+				reagent_contract.performTransition("add_reagent", 1, "slide");
+			}
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -478,7 +547,7 @@ require([
 		//// Events //////
 		//////////////////
 		on(add_hosp_contract_title, "click", function () {
-			back("add_hosp_contract_back", "add_hosp_contract", "view_contract")
+			back("add_hosp_contract_back", "add_hosp_contract", "hosp_contract")
 		});
 		/// กดปุ่ม SAVE บันทึกรายการน้ำยา
 		on(add_hosp_contract_save, "click", function () {
@@ -491,11 +560,12 @@ require([
 					var newhosp_id = obj0[s].hosp_id;
 					var csave = "add_hosp_contract.php?contract_id=" + lccontract_id + "&hosp_id=" + newhosp_id;
 					mysave(csave);
+					list("hosp_contract_list", "show_hosp_contract.php?contract_id=" + lccontract_id);
 				}
 			}
 
 		});
-		
+
 
 		///////////////////////////////
 		//// View 3   /////////////////
@@ -527,7 +597,7 @@ require([
 			view3.performTransition("view4", 1, "slide");
 		});
 		on(view3_title, "click", function () {
-			back("back_view3", "view3", "view2");
+			back("back_view3", "view3", "view_menu");
 		});
 
 		///////////////////////////////
@@ -591,12 +661,6 @@ require([
 		on(view_user_title, "click", function () {
 			back("view_user_back", "view_user", "view_menu");
 		});
-		//	on(view_user_list, "click", function () {
-		//		alert("view_user");
-		//		//view_user.performTransition("view_user_back", 1, "slide");
-		//		//back("view_user_back", "view_user", "view_menu");
-		//	});
-
 
 		on(view_user_title, "click", function () {
 			view_user.performTransition('add_user', 1, 'slide')
@@ -633,7 +697,59 @@ require([
 		on(add_user_list, "click", function () {
 			var uobj = selected_row('add_user_list');
 			lchospn = uobj.hosp_id;
-			dialog('เพิ่มผู้ใช้', 'var csave="add_user.php?fname="+lfname+"&lname="+llname+"&user_name="+lusername+"&password="+lpassw+"&level_id="+llevel+"&hosp_id="+lchospn;mysave(csave)', 'lfname', 'C', 'ชื่อ', 'llname', 'C', 'นามสกุล', 'lusername', 'C', 'User name', 'lpassw', 'C', 'รหัสผ่าน', 'llevel', 'N', 'ระดับ');
+			add_user.performTransition("add_user_detail", 1, "slide");
+		});
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////
+		//// add_user_detail  /////////////////
+		///////////////////////////////
+		//////////////////
+		//// Register ////
+		//////////////////
+		var add_user_detail = reg.byId("add_user_detail");
+		var add_user_detail_title = reg.byId("add_user_detail_title");
+		var add_user_detail_back = reg.byId("add_user_detail_back");
+		var user_fname = reg.byId("user_fname");
+		var user_lname = reg.byId("user_lname");
+		var user_name = reg.byId("user_name");
+		var user_password = reg.byId("user_password");
+		var user_level = reg.byId("user_level");
+
+
+		//////////////////
+		//// Function ////
+		//////////////////
+
+		//////////////////
+		//// Variables ///
+		//////////////////
+
+		//////////////////
+		//// Events //////
+		//////////////////
+		on(add_user_detail_title, "click", function () {
+			back("add_user_detail_back", "add_user_detail", "add_user");
+		});
+
+
+		on(add_user_detail_save, "click", function () {
+			lcfname = user_fname.get("value");
+			lclname = user_lname.get("value");
+			lcusername = user_name.get("value");
+			lcpassword = user_password.get("value");
+			lclevel = user_level.get("value");
+			var encrypted = CryptoJS.AES.encrypt(lcpassword, "MbaseMaqetta by leklek");
+			console.log(lcfname);
+			console.log(lclname);
+			console.log(lcusername);
+			console.log(lcpassword);
+			console.log(lclevel);
+			console.log(lchospn);
+			var csave = "add_user.php?fname=" + lcfname + "&lname=" + lclname + "&user_name=" + lcusername + "&password=" + encrypted + "&level_id=" + lclevel + "&hosp_id=" + lchospn
+			mysave(csave);
+			list("view_user_list", "user_list.php");
+			add_user_detail.performTransition("view_user",1,"slide");			
 		});
 
 
@@ -641,4 +757,4 @@ require([
 		//// ส่วนล่าง 2 บรรทัด ห้ามลบ ห้ามแก้ไข ///////////////////////////////////////////////////////////////////////
 	});
 });
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////

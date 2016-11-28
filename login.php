@@ -53,10 +53,10 @@ include 'mbase.php';
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
 $a=$_GET['lcuser'];
-$b = $_GET['lcpassw'];
+
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="SELECT *, concat('ยินดีต้อนรับ ',fname) AS label FROM user WHERE user_name='".trim($a)."' AND password='".trim($b)."' LIMIT 1 ";
+$strSQL="SELECT *, concat('ยินดีต้อนรับ ',fname,' ',lname) AS label FROM user WHERE user_name='".trim($a)."' LIMIT 1 ";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 

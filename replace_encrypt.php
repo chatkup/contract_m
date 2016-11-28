@@ -52,21 +52,16 @@ include 'mbase.php';
 //$a = $_GET['user_id'];
 
 //// Numeric ใน $strSQL ไม่ต้องมี ' ' คร่อม parameter
-$contract_id=$_GET['contract_id'];
+$a=$_GET['lcuser'];
+$b = $_GET['lcpassw'];
 
 //// SQL ติดต่อกับฐานข้อมูล mySQL Field ชื่อ label อยู่ด้านซ้ายของ List และ Field ชื่อ rightText อยู่ด้านขวาของ List
-$strSQL="SELECT concat(rd.reagent_name,' ',cd.contract_vol, ' test') AS label, concat(cd.contract_cost,' บาท >') AS rightText, rd.reagent_id
-FROM reagent_detail rd, contract_detail cd 
-WHERE cd.contract_id='".$contract_id."' AND rd.is_cancel=0 AND cd.is_cancel=0 
-AND rd.reagent_id=cd.reagent_id ORDER BY cd.reagent_id";
+
+$strSQL="UPDATE user SET password='".$b."' WHERE user_name='".$a."'";
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-$lrow=mysql_num_rows($objQuery);
 
-if ($lrow==0){
-	$strSQL="SELECT 'No Data' AS label";
-	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ได้ผล Query แล้วนำมาสร้างเป็น Text รูปแบบ JSON Object เพื่อนำไปใช้ต่อโดย Javascript
 //// ส่วนต่อจากนี้ ไม่ต้องแก้ไข ใช้ Code ตามนี้ได้เลย ยกเว้นต้องการปรับปรุงค่าใน Field เช่นแสดงวันที่ภาษาไทย จาก Date Field
